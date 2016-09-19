@@ -1,0 +1,43 @@
+{% load static %}
+<html>
+	<head>
+	  	<script src="{% static 'pventa/js/angular/angular.js' %}"></script>
+	  	<script src="{% static 'pventa/js/angular/angular-route.js' %}"></script>
+	  	<script src="{% static 'venta/js/controllers.js' %}"></script>
+	  	<script src="{% static 'venta/js/venta.js' %}"></script>
+	  	<script type="text/javascript">var csrf = '{{ csrf_token }}';</script>
+
+  		<link rel="stylesheet" type="text/css" href="{% static 'pventa/css/palette.css' %}">
+  		<link rel="stylesheet" type="text/css" href="{% static 'pventa/css/family.css' %}">
+
+		<link rel="stylesheet" type="text/css" href="{% static 'venta/css/login.css' %}">
+		<title>Login</title>
+	</head>
+	<body ng-app="login_app" ng-controller="login_controller">
+		<section background="default-primary">
+			<div class="centerer">
+				<div class="inline form" border="dark-primary">
+						<div class="logo-mov">
+							<img src="{% static 'pventa/img/Logo-PV-light.png' %}">
+						</div>
+						<form>
+							<h2 color="light-primary">Inicio de Sesión</h2>
+							<p>
+								<input ng-model="username" placeholder="Usuario" color="text-primary" border="dark-primary">
+							</p>
+							<p>
+								<input ng-model="password" type="password" placeholder="Contraseña" color="text-primary" border="dark-primary">
+							</p>
+							<button id="login-button" ng-click="login()" background="accent" border="dark-primary" color="text">Iniciar Sesión</button>
+							<p id="message" color="light-primary" hide>
+								<span>Contraseña incorrecta!</span>
+							</p>
+						</form>
+				</div>
+				<div class="inline logo-pc">
+					<img src="{% static 'pventa/img/Logo-PV-light.png' %}">
+				</div>
+			</div>
+		</section>
+	</body>
+</html>

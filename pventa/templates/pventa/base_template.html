@@ -1,0 +1,8 @@
+{%extends "admin/index.html" %}
+{% load static material_form %} 
+{% block extrastyle %}
+    {{ block.super }}
+    {% include 'material/includes/material_css.html' %}
+    <script src="{% static 'material/js/jquery-2.2.0.js' %}"></script>
+    {% include 'material/includes/material_js.html' %}
+{% endblock %}

@@ -1,0 +1,31 @@
+<section class="categorys">
+	<input type="search" ng-model="search" ng-change="load_categorys()">
+	<ul>
+		<li ng-repeat="c in categorys" ng-click="load_products(c.id)">
+			[[c.name]]
+		</li>
+	</ul>
+</section>
+<section class="products">
+	<ul>
+		<li ng-repeat="p in products">
+			<span>[[p.name]] - [[p.price]]</span>
+			<button ng-click="minus_product(p)">-</button>
+			<input type="text" ng-model="order[p.id].count" value="0">
+			<button ng-click="plus_product(p)">+</button>
+		</li>
+	</ul>
+	<ul>
+		<li>Table</li>
+	</ul>
+</section>
+<section class="voucher">
+	<div>Cuenta No: </div>
+	<ul>
+		<li ng-repeat="o in order">
+			<span>[[o.product_name]] - [[o.count]] - [[o.total_price]]</span>
+		</li>
+	</ul>
+	<div>Total: [[total]]</div>
+	<button ng-click="pay()">PAGAR</button>
+</section>

@@ -1,0 +1,122 @@
+<div id="order-add" class="confirm">
+	<div class="parent" background="text">
+		<section class="voucher">
+			<div class="scrollv">
+				<table>
+					<tr ng-repeat="p in order.products">
+						<td>
+							<span>[[p.product_obj.name]]</span>
+						</td>
+						<td>
+							<span> x [[p.count]]</span>
+						</td>
+						<td>
+							<span>$[[p.count*p.product_obj.price]]</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<table>
+				<tr>
+					<td>
+						<span>Sub Total: </span>
+					</td>
+					<td>
+						<span>$[[subtotal]]</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>IVA: </span>
+					</td>
+					<td>
+						<span>$[[iva]]</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>Ipoconsumo:</span>
+					</td>
+					<td>
+						<span>$[[ipoconsumo]]</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>Propina:</span>
+					</td>
+					<td>
+						<span>$[[tip]]</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>Total:</span>
+					</td>
+					<td>
+						<span>$[[total]]</span>
+					</td>
+				</tr>
+			</table>
+		</section>
+		<div class="order-data">
+			<div class="main">
+				<p>
+					<span>EFECTIVO</span> <input ng-readonly="[[order.paid]]" type="number" ng-focus="clear('cash')" ng-blur="fill('cash')" ng-change="update_total_paid()" ng-model="cash">
+				</p>
+				<p>
+					<span>CHEQUE</span>  <input ng-readonly="[[order.paid]]" type="number" ng-focus="clear('check')" ng-blur="fill('check')" ng-change="update_total_paid()" ng-model="check">
+				</p>
+				<p>
+					<span>TARJETA</span> <input ng-readonly="[[order.paid]]" type="number" ng-focus="clear('card')" ng-blur="fill('card')" ng-change="update_total_paid()" ng-model="card">
+				</p>
+				<p>
+					<span>DESCUENTO</span> <input ng-readonly="[[order.paid]]" type="number" ng-focus="clear('disscounts')" ng-blur="fill('disscounts')" ng-change="update_total_paid()" ng-model="disscounts">
+				</p>	
+				<p>
+					<span>PROPINA</span> <input ng-readonly="[[order.paid]]" type="number" ng-focus="clear('tip')" ng-blur="fill('tip')" ng-change="update_total()"  ng-model="tip">
+				</p>	
+				<p>
+					<span>CEDULA</span> <input ng-readonly="[[order.paid]]" type="text" ng-blur="get_client()" ng-model="cc">
+				</p>	
+				<p>
+					<span>NOMBRE</span> <input ng-readonly="[[order.paid]]" type="text" ng-model="name">
+				</p>	
+				<p>
+					<span>TELEFONO</span> <input ng-readonly="[[order.paid]]" type="text" ng-model="tel">
+				</p>	
+				<div id="total" class="total" ng-click="checkin();">
+					<div class="cant">
+						<span>Total: $[[total]]</span>
+						<i class="material-icons" ng-show="total != total_paid">report</i>
+						<i class="material-icons" ng-show="total == total_paid && !checked">check</i>
+						<i class="material-icons" ng-show="checked">done_all</i>
+					</div>
+					<span>
+						confirmar:
+						$[[total_paid]] [[total > total_paid?'faltan: $':total == total_paid?'coincide':'sobran: $']]
+						[[total != total_paid?(total - total_paid).toFixed(2):'']]
+					</span>
+				</div>
+			</div>
+			<div class="buttons">
+				<!--a ng-show="order.paid" class="button" color="text" background="accent" ng-click="goTo('orders_edit', {'order_id': order_id})">
+					VER ORDEN
+					<i class="material-icons">visibility</i>
+				</a>
+				<a ng-show="!order.paid" class="button" color="text" background="accent" ng-click="goTo('orders_edit', {'order_id': order_id})">
+					EDITAR ORDEN
+					<i class="material-icons">create</i>
+				</a-->
+				<a ng-show="!order.paid" class="button" color="text" background="[[!checked?'secondary-text':'accent']]" ng-click="save();">
+					GUARDAR E IMPRIMIR
+					<i class="material-icons">print</i>
+				</a>
+				<a ng-show="order.paid" class="button" color="text" background="accent" ng-click="pv_print();">
+					IMPRIMIR
+					<i class="material-icons">print</i>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

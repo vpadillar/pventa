@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html5>
+<html background="light-primary">
+  <head>
+  	<script src="{% static 'pventa/js/angular/angular.js' %}"></script>
+    <script src="{% static 'pventa/js/angular/angular-route.js' %}"></script>
+  	<script src="{% static 'pventa/js/angular/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'venta/js/venta.js' %}"></script>
+  	<script src="{% static 'venta/js/sq_print.js' %}"></script>
+    <script src="{% static 'venta/js/controllers.js' %}"></script>
+  	<script src="{% static 'venta/js/routers.js' %}"></script>
+  	<script type="text/javascript">var csrf = '{{ csrf_token }}';</script>
+  	<link rel="stylesheet" type="text/css" href="{% static 'venta/css/venta.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'pventa/css/palette.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'pventa/css/family.css' %}">
+  	<title>P - Venta</title>
+  </head>
+  <body ng-app="venta_app" ng-controller="main_controller">
+  	<header background="dark-primary">
+      <div id="menu">
+          <ul>
+            {% if groups.0.name == 'mesero' or groups.1.name == 'mesero' %}
+            <li ng-click="goTo('orders')">
+              <div class="img orders"></div>
+              <span color="light-primary">Órdenes</span>
+            </li>
+            {% endif %}
+            {% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
+            <li ng-click="goTo('pay')">
+              <div class="img orders"></div>
+              <span color="light-primary">Pagar</span>
+            </li>
+            {% endif %}
+            {% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
+            <li ng-click="goTo('products')">
+              <div class="img products"></div>
+              <span color="light-primary">Productos</span>
+            </li>
+            {% endif %}
+            {% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
+            <li ng-click="goTo('categories')">
+              <div class="img categories"></div>
+              <span color="light-primary">Categorias</span>
+            </li>
+            {% endif %}
+            <!--li ng-click="goTo('clients')">
+              <div class="img clients"></div>
+              <span color="light-primary">Clientes</span>
+            </li-->
+          </ul>
+      </div>
+      {% if user.is_staff %}
+      <nav onclick="location='/admin/';">
+        <div class="shadow s1"></div>
+        <div class="shadow s2"></div>
+        <i background="accent" color="light-primary" class="material-icons">settings</i>
+        <ul>
+          <li></li>
+        </ul>
+      </nav>
+      {% endif %}
+      <nav ng-click="logout()">
+        <div class="shadow s1"></div>
+        <div class="shadow s2"></div>
+        <i background="accent" color="light-primary" class="material-icons">power_settings_new</i>
+        <ul>
+          <li></li>
+        </ul>
+      </nav>
+      <nav ng-click="goTo('dashboard')">
+        <div class="shadow s1"></div>
+        <div class="shadow s2"></div>
+        <i background="accent" color="light-primary" class="material-icons">dashboard</i>
+        <ul>
+          <li></li>
+        </ul>
+      </nav>
+  	</header>
+	<section id="main" >
+		<div ui-view></div>  
+	</section>
+	<footer>
+		
+	</footer>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<div id="order-add">
+	<div class="parent">
+		<section id="category" class="category-list" border="dark-primary">
+			<input type="search" ng-model="search" ng-change="load_categorys()">
+			<i class="material-icons">search</i>
+			<ul>
+				<li ng-repeat="c in categorys" ng-click="load_products(c.id)">
+					[[c.name]]
+				</li>
+			</ul>
+		</section>
+		<div class="table-list" background="text">
+			<table class="head">
+				<colgroup>
+						<col width="250px"></col>
+						<col width="200px"></col>
+						<col width="200px"></col>
+						<col width="200px"></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>
+							<span>Producto</span>
+						</th>
+						<th>
+							<span>PrecioUntario</span>
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+			</table>
+			<div class="scroll">
+				<table class="body">
+					<colgroup>
+						<col width="250px"></col>
+						<col width="200px"></col>
+						<col width="200px"></col>
+						<col width="200px"></col>
+					</colgroup>
+					<tbody>
+						<tr ng-repeat="p in products">
+							<td>
+								<span>[[p.name]]</span>
+							</td>
+							<td>
+								<span>[[p.price]]</span>
+							</td>
+							<th>
+								<a class="button" color="text" background="accent" ng-click="minus_product(p)">
+									<i class="material-icons">remove</i>
+								</a>
+								<input type="text" ng-model="order[p.id].count" value="0">
+								<a class="button" color="text" background="accent" ng-click="plus_product(p)">
+									<i class="material-icons">add</i>
+								</a>
+							</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="scroll tables">
+				<ul>
+					<li ng-repeat="t in tables" ng-click="table_selected.table = t.id">
+						<span>[[t.name]]</span>
+						<i class="material-icons" ng-show="table_selected.table === t.id">check</i>
+						<i class="material-icons" ng-show="table_selected.table !== t.id">touch_app</i>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<section class="voucher">
+			<div class="cnum"  background="text">
+				<span>Cuenta No: [[nocount]]</span>
+				<a class="button pay" ng-show="order_id" color="text" background="accent" ng-click="del()">
+					<i class="material-icons">delete</i>
+				</a>
+			</div>
+			<div class="spacer"  background="text">
+				<table>
+					<tr ng-repeat="o in order">
+						<td>
+							<span>[[o.product_name]]</span>
+						</td>
+						<td>
+							<span> x [[o.count]]</span>
+						</td>
+						<td>
+							<span>$[[o.total_price]]</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="total"  background="text">
+				<span>Total: $[[total]]</span>
+			</div>
+			<a ng-show="order_id==null&&!tables[0]" class="button pay" color="text" background="secondary-text">
+				NO HAY MESAS
+			</a>
+			<a ng-show="order_id==null&&tables[0]" class="button pay" color="text" background="accent" ng-click="pay()">
+				ENVIAR ORDEN
+				<i class="material-icons">print</i>
+			</a>
+			<a ng-show="order_id!=null&&!paid" class="button pay" color="text" background="accent" ng-click="pay()">
+				CORREGIR ORDEN
+				<i class="material-icons">print</i>
+			</a>
+			<a ng-show="paid" class="button pay" color="text" background="accent" ng-click="goTo('confirm', {'order_id': order_id});">
+				VER PAGO
+				<i class="material-icons">visibility</i>
+			</a>
+		</section>
+	</div>
+</div>

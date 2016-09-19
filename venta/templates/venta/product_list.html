@@ -1,0 +1,73 @@
+<div id="products">
+	<div class="parent">
+		<section id="category" class="category-list" border="dark-primary">
+			<input type="search" ng-model="search" ng-change="load_categorys()">
+			<i class="material-icons">search</i>
+			<ul>
+				<li ng-repeat="c in categorys" ng-click="load_products(c.id, c.name)" background="text">
+					[[c.name]]
+				</li>
+			</ul>
+		</section>
+		<div class="table-list" background="text">
+			<div class="tools">
+				<h2>[[category_name]]</h2>
+				<a ng-click="goTo('product_add')" class="button" color="text" background="accent">
+					AGREGAR PRODUCTO
+					<i class="material-icons">add</i>
+				</a>
+			</div>			
+			<table class="head">
+				<colgroup>
+					<col width="60%"></col>
+					<col width="20%"></col>
+					<col width="10%"></col>
+					<col width="10%"></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>
+							<span>Nombre Producto</span>
+						</th>
+						<th>
+							<span>Presentación</span>
+						</th>
+						<th>
+							<span>PrecioUntario</span>
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+			</table>
+			<div class="scroll">
+				<table class="body">
+					<colgroup>
+						<col width="60%"></col>
+						<col width="20%"></col>
+						<col width="10%"></col>
+						<col width="40px"></col>
+					</colgroup>
+					<tbody>
+						<tr ng-repeat="p in products">
+							<td>
+								<span>[[p.name]]</span>
+							</td>
+							<td>
+								<span>[[p.presentation_obj.name]]</span>
+							</td>
+							<td>
+								<span>[[p.price]]</span>
+							</td>
+							<th>
+								<a ng-click="goTo('product_edit', {'product_id': p.id})" class="button" color="text" background="accent">
+									<i class="material-icons">create</i>
+								</a>	
+							</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>

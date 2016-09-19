@@ -1,0 +1,50 @@
+<div id="product-add" class="add">
+	<h2>[[title]]</h2>
+	<div id="form">
+		<div class="inputs">
+			<p>
+				<label>Producto</label>
+				<input type="text" placeholder="Nombre Producto" ng-model="product_name">
+				<span hide>*</span>
+			</p>
+			<p>
+				<label>Precio</label>
+				<input type="number" placeholder="Precio unitario" ng-model="product_price">
+				<span hide>*</span>
+			</p>
+			<p>
+				<label>Presentación</label>
+				<select 
+					ng-options="option.name for option in product_presentation.data.availableOptions track by option.id"
+		      		ng-model="product_presentation.data.selectedOption">
+				</select>
+				<span hide>*</span>
+			</p>
+			<p>
+				<label>Categoía</label>
+				<select 
+					ng-options="option.name for option in product_category.data.availableOptions track by option.id"
+		      		ng-model="product_category.data.selectedOption">
+				</select>
+				<span hide>*</span>
+			</p>
+		</div>
+		<div class="buttons">
+			<a ng-click="del()" ng-show="product_id" class="button" background="accent" color="text">
+				BORRAR
+				<i class="material-icons">delete</i>
+			</a>
+			<a ng-click="goTo('products')" class="button" background="accent" color="text">
+				CANCELAR
+				<i class="material-icons">clear</i>
+			</a>
+			<a id="add-button" class="button" background="accent" color="text" ng-click="send()">
+				GUARDAR PRDUCTO
+				<i class="material-icons">[[button]]</i>
+			</a>
+		</div>
+	</div>
+	<div id="success" background="text">
+		<span>Operación exitosa</span>
+	</div>
+</div>

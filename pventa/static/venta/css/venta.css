@@ -1,0 +1,610 @@
+
+html, body{
+	margin: 0px;
+	padding: 0px;
+}
+
+header{
+	width: 100%;
+	height: 100px;
+	/*outline: solid 1px black;*/
+}
+
+body{
+
+	background-image: url("/static/pventa/img/Logo-PV.png");
+	background-repeat: no-repeat;
+	background-position: calc(100% - 10px) bottom;
+}
+
+nav {
+    width: 100px;
+    height: 100px;
+    float: right;
+    text-align: center;
+}
+
+nav i{
+	display: block;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	/*border: solid 1px black;*/
+	font-size: 45px;
+	vertical-align: middle;
+	margin: 10px;
+	padding: 8px;
+	position: absolute;
+}
+
+nav ul{
+	display: none;
+}
+.button{
+	cursor: pointer;
+}
+
+#menu{
+    padding-left: 10px;
+    width: 400px;
+    height: 150px;
+    float: left;
+}
+
+#menu ul{
+	position: relative;
+	padding: 0px;
+}
+
+#menu ul li{
+	list-style-type: none;
+	display: inline-block;
+	text-align: center;
+	margin: 5px;
+	width: 60px;
+	height: 60px;
+}
+#menu ul li .img{
+	height: 60px;
+	background-size: 100% 100%;
+}
+
+.shadow{
+	position: absolute;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	margin: 10px;
+	z-index: 0;
+}
+.s1{
+	background-color: #594844;
+	margin-top: 9px;
+}
+.s2{
+	background-color: #28211d;
+	margin-top: 11px;
+}
+
+#dashboard{
+	margin: 10px;
+	/*outline: solid black 1px;*/
+	height: calc(100% - 120px);
+	text-align: center;
+}
+
+#dashboard ul{
+	margin: 0px;
+	padding: 20px;
+}
+
+#dashboard ul li{
+	list-style-type: none;
+	display: inline-block;
+	width: 128px;
+	height: 132px;
+	margin: 30px;
+}
+
+#dashboard ul li div.img{
+	height: 132px;
+}
+
+.img.orders{
+	background-image: url("/static/pventa/img/orders.png");
+}
+.img.products{
+	background-image: url("/static/pventa/img/products.png");
+}
+.img.categories{
+	background-image: url("/static/pventa/img/categories.png");
+}
+.img.clients{
+	background-image: url("/static/pventa/img/clients.png");
+}
+
+#category{
+	margin: 10px;
+	width: calc(100% - 20px);
+}
+
+#category h2{
+	margin-left: 20px;
+}
+
+#category ul{
+	text-align: center;
+	padding: 0px;
+	text-align: justify;
+}
+
+#category ul li{
+	list-style-type: none;
+	display: inline-block;
+	width: 130px;
+	height: 62px;
+	margin: 30px;
+	border: solid 1px;
+	border-radius: 2px;
+}
+
+#category ul li .ornament{
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	border: solid 1px;
+	position: relative;
+	top: 50%;
+	float: right;
+	margin-top: -5px;
+	right: 10px;
+}
+
+#category ul li span{
+	display: block;
+	position: relative;
+	top: 100%;
+	margin-top: -25px;
+	margin-right: 5px;
+	float: right;
+	width: 100%;
+	text-align: right;
+}
+
+#category .tools{
+	float: right;
+    padding-top: 30px;
+    height: calc(100% - 210px);
+}
+
+ .button{
+	display: block;
+	width: 200px;
+	padding: 15px;
+	border: none;
+	border-radius: 2px;
+}
+
+.button i{
+	float: right;
+}
+
+#category .button i{
+	width: 20px;
+	display: block;
+	position: relative;
+	float: right;
+	font-size: 20px;
+}
+
+@media only screen and (max-width: 441px)  {
+	#category .tools{
+	    height: auto;
+	}	
+}
+
+div.add{
+	display: table;
+	border-spacing: 10px;
+	margin: 40px;
+}
+
+#form {
+	display: table-row;
+}
+
+#form .inputs{
+	width: 400px;
+	display: table-cell;
+}
+
+#form .inputs p{
+	padding: 20px;
+}
+
+
+#form label{
+	display: block;
+	font-family: "robotomedium";
+	font-size: 13px;
+}
+
+#form input[type="text"]{
+	border: none;
+	border-bottom: solid 1px black;
+	background-color: transparent;
+	width: calc(100% - 20px);
+}
+
+#form input[type="number"]{
+	border: none;
+	border-bottom: solid 1px black;
+	background-color: transparent;
+	width: 130px;
+}
+
+#form select{
+	border: none;
+	border-bottom: solid 1px black;
+	background-color: transparent;
+	width: 120px;
+}
+#form select.preview{
+	float: left;
+}
+
+#form p{
+	vertical-align: top;
+}
+
+#form img.preview{
+	width: 150px;
+	height: 150px;
+	margin-left: 100px;
+	border: solid 1px black;
+	float: right;
+}
+
+#form .buttons{
+    width: 230px;
+    margin-left: 10px;
+    margin-top: 30px;
+    vertical-align: bottom;
+    display: table-cell;
+	cursor: pointer;
+}
+
+#form .buttons .button{
+	width: 200px;
+	margin-top: 5px;
+	cursor: pointer;
+}
+
+#form [hide]{
+	position: absolute;
+}
+
+#form:not([show]) [hide]{
+	display: none;
+}
+
+#success{
+	position: fixed;
+	bottom: -100px;
+	right: 100px;
+	padding: 10px;
+	font-size: 15px;
+	border-radius: 2px;
+}
+
+@keyframes ripple {
+    0% {left: 5px;}
+    25% {left: -5px;}
+    50% {left: 0px;}
+    75% {left: 5px;}
+    100% {left: 0px;}
+}
+
+[ripple]{
+	position: relative;
+	animation-name: ripple;
+    animation-duration: .2s;
+}
+
+@keyframes appear {
+    0% {bottom: -100px;opacity: 1;}
+    25% {bottom: 105px;opacity: 1;}
+    50% {bottom: 105px;opacity: 0;}
+    75% {bottom: -50px;opacity: 0;}
+    100% {bottom: -100px;opacity: 0;}
+}
+
+[appear]{
+	animation-name: appear;
+	animation-duration: 3s;
+}
+
+.scroll{
+    height: 390px;
+    overflow: auto;
+    float: left;
+    width: calc(100% - 200px);
+}
+.scrollv{
+    height: calc(100% - 150px);
+    overflow: auto;
+}
+.tables{
+	width: 200px;
+}
+.tables ul {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.tables ul li{
+	padding: 20px 10px;
+	margin: 10px;
+	text-align: center;
+	border: solid 1px;
+	border-radius: 2px;
+}
+
+.tables li i{
+	font-size: 30px;
+	float: left;
+}
+
+#products, #order-add {
+	display: table;
+	margin: 20px auto;
+	width: calc(100% - 40px);
+	border-spacing: 10px;
+	height: calc(100% - 140px);
+}
+#order-add.confirm{
+	border-spacing: 0px;
+	border: solid 1px;
+}
+
+#order-add.confirm .voucher{
+	padding: 10px;
+}
+
+#order-add.confirm .order-data{
+	display: table-cell;
+	padding: 10px;
+}
+
+#order-add.confirm .order-data .buttons .button{
+	display: inline-block;
+	cursor: pointer;
+}
+
+#order-add.confirm .order-data .buttons .button i{
+	font-size: 20px;
+}
+
+#order-add.confirm .main{
+	height: calc(100% - 100px);
+}
+
+#order-add.confirm .main p span{
+	display: inline-block;
+	width: 30%;
+	min-width: 150px;
+	margin-left: 30px;
+	font-size: 22px;
+}
+
+#order-add.confirm .main .total{
+	float: right;
+	width: 300px;
+	margin-right: 15px;
+	border: solid 1px;
+}
+
+#order-add.confirm .main .total i{
+	float: right;
+	font-size: 40px;
+}
+
+#order-add.confirm .main .total .cant span{
+	font-size: 25px;
+}
+
+#order-add.confirm .main .total span{
+	font-size: 20px;
+}
+
+#order-add.confirm .main input[type="number"],#order-add.confirm .main input[type="text"]{
+	display: inline-block;
+	width: calc(70% - 50px);
+	border: none;
+	border-bottom: solid 1px;
+	font-size: 22px;
+	text-align: right;
+	text-transform: uppercase;
+}
+
+#products .parent, #order-add .parent{
+	display: table-row;
+}
+
+#products .category-list, #order-add .category-list{
+	display: table-cell;
+	width: 170px !important;
+	border-style: solid;
+	border-width: 2px;
+	border-radius: 4px;
+}
+
+#products .category-list ul, #order-add .category-list ul{
+	overflow: auto;	
+	height: calc(100% - 100px);
+	text-align: center;
+}
+
+#products .category-list ul li, #order-add .category-list ul li{
+	margin: 3px;
+}
+
+#products .table-list, #order-add .table-list{
+	display: table-cell;
+}
+
+#products .table-list, #order-add .table-list{
+	border: solid 1px;
+}
+
+#products .table-list .tools {
+	padding: 10px;
+	height: 50px;
+	margin-bottom: 10px;
+}
+#products .table-list .tools h2 {
+	margin: 10px;
+	width: calc(100% - 270px);
+	display: inline-block;
+} 
+
+ .table-list table .button{
+	width: 20px;
+	height: 15px;
+}
+
+#order-add .table-list table .button{
+	width: 22px;
+	height: 22px;
+	padding: 10px;
+	margin: 3px;
+	display: inline-block;
+	float: left;
+	cursor: pointer;
+}
+
+#order-add .table-list table .button i{
+	font-size: 20px;
+}
+
+#order-add .table-list table input{
+	width: 50px;
+	height: 42px;
+	border: none;
+	font-size: 22px;
+	text-align: center;
+	display: inline-block;
+	float: left;
+}
+
+#products .table-list .tools .button{
+	display: inline-block;
+	cursor: pointer;
+}
+
+#products table{
+	border-spacing: 0px;
+	width: calc(100% - 40px);
+	margin: 20px;
+}
+
+#products table.head{
+	margin-bottom: 0px !important;
+}
+
+#products table.body{
+	margin-top: 0px !important;
+}
+
+#products table td{
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #000;
+}
+
+input[type="search"]{
+	border: none;
+	border-bottom: solid 1px;
+	background-color: transparent; 
+	width: 100px;
+	margin-left: 20px;
+}
+
+#products .category-list i , #order-add .category-list i {
+	font-size: 25px;
+}
+
+
+.voucher{
+    display: table-cell;
+    width: 200px;
+    vertical-align: top;
+}
+
+.voucher .cnum{
+	padding: 5px;
+	height: 30px;
+	border: solid 1px;
+	border-bottom: none;
+}
+.voucher .cnum span{
+	font-size: 20px;
+}
+
+.voucher .cnum .button{
+	width: 20px;
+	display: inline-block;
+	float: right;
+	margin: 0px;
+	padding: 5px;
+	cursor: pointer;
+}
+
+.voucher .spacer {
+	height: calc(100% - 180px);
+	border: solid 1px;
+	border-bottom: none;
+	overflow: auto;
+}
+
+.voucher table{
+	width: 100%;
+}
+
+.voucher .total{
+	padding: 10px;
+	border: solid 1px;
+	margin-bottom: 10px;
+}
+
+.voucher .total span{
+	font-size: 30px;
+}
+.pay i{
+	font-size: 20px;
+}
+#orders{
+	display: table;
+	margin: 20px auto;
+	border-spacing: 10px;
+	width: calc(100% - 40px);
+}
+
+#orders .table-list{
+	display: table-cell;
+	width: 100%;
+}
+#orders .table-list table{
+	width: calc(100% - 50px);
+	margin: 0 auto;
+}
+
+#orders .table-list table td{
+	text-align: center;
+}
+
+#orders .tools{
+	display: table-cell;
+	width: 200px;
+}

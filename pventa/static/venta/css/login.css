@@ -1,0 +1,133 @@
+html body{
+	margin: 0px;
+	padding: 0px;
+}
+
+section{
+	position: fixed;
+    top: 25%;
+    bottom: 25%;
+    left: 0px;
+    right: 0px;
+    background-color: #ddd;
+    min-height: 260px;
+    display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.centerer{
+	min-width: 600px;
+    margin: 0 auto;
+    width: 70%;
+    height: 300px;
+    /*margin-top: calc(50% - 300px);*/
+}
+
+.inline{
+	float: left;
+	width: calc(50% - 70px);
+	min-width: 360px;
+	height: calc(100% - 40px);
+	margin: 0 auto;
+	margin-top: 20px;
+}
+
+.inline.form {
+    border-right: black solid 2px;
+}
+
+form {
+	margin: 0 auto;
+    width: 300px;
+}
+
+form input, form button, form h2{
+	width: 300px;
+}
+
+form input{
+	border: none;
+	background-color: transparent; 
+	border-bottom: #ddd solid 2px;
+}
+
+form button{
+	border: black solid 1px;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+div.inline {
+	vertical-align: middle;
+}
+
+div.inline img{
+	max-height: 12.5em;
+	position: relative;
+	top: calc(50% - 100px);
+	
+}
+
+#message {
+	text-align: center;
+}
+
+.logo-mov{
+	text-align: center;
+	display: none;
+}
+
+.logo-pc{
+	width: 100px !important;
+    padding-left: 69px;
+    min-width: 100px;
+}
+
+@media only screen and (max-device-width: 600px){
+	.logo-mov{
+		display: block;
+	}
+	form{
+		width: 100%;
+	}
+
+	input, button{
+		width: 100% !important;
+	}
+
+	h2{
+		text-align: center;
+		width: auto !important;
+	}
+
+	section{
+		top: 0px;
+		bottom: 0px;
+	}
+
+	.centerer{
+		margin-top: -300px;
+	}
+
+	.logo-pc{
+		display: none;
+	}
+	.inline{
+		float: none;
+		width: inherit;
+		min-width: 350px;
+	}
+	.inline.form {
+	    border-right: none;
+	}
+}
+
+@media only screen and (min-device-width: 600px) and (max-device-width: 1440px) and (max-device-height: 950px){
+	.centerer{
+		/*margin-top: calc(50% - 600px);*/
+	}
+}
+@media (max-width: 350px){
+
+}

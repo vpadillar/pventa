@@ -1,0 +1,16 @@
+<section id="category">
+	<input type="search" ng-model="search" ng-change="load_categorys()" style="display: none">
+	<h2>CATEGORIAS</h2>
+	<div class="tools">
+		<a ng-click="goTo('categories_add')" class="button" color="text" background="accent">
+			AGREGAR CATEGORIA
+			<i class="material-icons">add</i>
+		</a>
+	</div>
+	<ul>
+		<li ng-repeat="c in categorys" ng-click="goTo('categories_edit', {'category_id':c.id})" border="accent" background="text">
+			<div class="ornament" background="light-primary" border="accent" ></div>
+			<span>[[c.name]]</span>
+		</li>
+	</ul>
+</section>

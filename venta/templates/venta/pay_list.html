@@ -1,0 +1,105 @@
+<div id="orders">
+	<h2>ÓRDENES</h2>
+	<div class="parent">
+		<div class="table-list" background="text">
+			<table class="head">
+				<colgroup>
+					<col width="20%"></col>
+					<col width="20%"></col>
+					<col width="10%"></col>
+					<col width="10%"></col>
+					<col width="10%"></col>
+					<col width="10%"></col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>
+							<span>#orden</span>
+						</th>
+						<th>
+							<span>Fecha</span>
+						</th>
+						<th>
+							<span>Estado</span>
+						</th>
+						<th>
+							<span># Productos</span>
+						</th>
+						<th>
+							<span>Precio</span>
+						</th>
+						<th>
+							<span>Pagar</span>
+						</th>
+						<th>
+							<span>Mesas</span>
+						</th>
+					</tr>
+				</thead>
+			</table>
+			<div class="scroll">
+				<table class="body">
+					<colgroup>
+						<col width="20%"></col>
+						<col width="20%"></col>
+						<col width="10%"></col>
+						<col width="10%"></col>
+						<col width="10%"></col>
+						<col width="10%"></col>
+					</colgroup>
+					<tbody>
+						<tr ng-repeat="o in orders">
+							<td>
+								<span>[[o.id]]</span>
+							</td>
+							<td>
+								<span>[[o.frienly_date]]</span>
+							</td>
+							<td>
+								<span>[[o.canceled?"Cancelado":"Completado"]]</span>
+							</td>
+							<td>
+								<span>[[o.products.length]]</span>
+							</td>
+							<td>
+								<span>$[[o.total]]</span>
+							</td>
+							<th>
+								<a style="margin: 0 auto" class="button" color="text" background="accent" ng-click="goTo('confirm', {'order_id':o.id})">
+									<i class="material-icons">credit_card</i>
+								</a>
+							</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="scroll tables">
+				<ul>
+					<li ng-repeat="t in tables" ng-click="goTo('orders_edit', {'order_id':t.order.id})">
+						<span>[[t.table.name]]</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="tools">
+			<p>
+				<a ng-click="pending()" class="button" color="text" background="accent">
+					PENDIENTES
+					<i class="material-icons">search</i>
+				</a>
+			</p>
+			<p>
+				<a ng-click="paids()" class="button" color="text" background="accent">
+					PAGADOS
+					<i class="material-icons">search</i>
+				</a>
+			</p>
+			<p>
+				<a ng-click="all()" class="button" color="text" background="accent">
+					TODOS
+					<i class="material-icons">search</i>
+				</a>
+			</p>
+		</div>
+	</div>
+</div>

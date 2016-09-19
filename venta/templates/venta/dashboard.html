@@ -1,0 +1,32 @@
+<div id="dashboard">
+	<ul>
+		{% if groups.0.name == 'mesero' or groups.1.name == 'mesero' %}
+		<li ng-click="goTo('orders')">
+			<div class="img orders"></div>
+			<span color="text-primary">Órdenes</span>
+		</li>
+		{% endif %}
+		{% if groups.0.name  == 'cajero' or groups.01name  == 'cajero' %}
+		<li ng-click="goTo('pay')">
+			<div class="img orders"></div>
+			<span color="text-primary">Pagar</span>
+		</li>
+		{% endif %}
+		{% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
+		<li ng-click="goTo('products')">
+			<div class="img products"></div>
+			<span color="text-primary">Productos</span>
+		</li>
+		{% endif %}
+		{% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
+		<li ng-click="goTo('categories')">
+			<div class="img categories"></div>
+			<span color="text-primary">Categorias</span>
+		</li>
+		{% endif %}
+		<!--li ng-click="goTo('clients')">
+			<div class="img clients"></div>
+			<span color="text-primary">Clientes</span>
+		</li-->
+	</ul>
+</div>

@@ -1,0 +1,39 @@
+<div id="category-add" class="add">
+	<h2>[[title]]</h2>
+	<div id="form">
+		<div class="inputs">
+			<p>
+				<label>Nombre</label>
+				<input name="name" type="text" placeholder="Nombre Categoría" ng-model="category_name">
+				<span hide>*</span>
+			</p>
+			<p>
+				<label>Imagen</label>
+				<select 
+					class="preview"
+					ng-options="option.name for option in category_image.data.availableOptions track by option.id"
+		      		ng-model="category_image.data.selectedOption">
+				</select>
+				<span hide>*</span>
+			</p>
+			<img src="[[category_image.data.selectedOption.url]]" alt="vista previa" class="preview">
+		</div>
+		<div class="buttons">
+			<a ng-click="del()" ng-show="category_id" class="button" background="accent" color="text">
+				BORRAR
+				<i class="material-icons">delete</i>
+			</a>
+			<a ng-click="goTo('categories')" class="button" background="accent" color="text">
+				CANCELAR
+				<i class="material-icons">clear</i>
+			</a>
+			<a id="add-button" class="button" background="accent" color="text" ng-click="send()">
+				GUARDAR CATEGORIA
+				<i class="material-icons">[[button]]</i>
+			</a>
+		</div>
+	</div>
+	<div id="success" background="text">
+		<span>Operación exitosa</span>
+	</div>
+</div>
