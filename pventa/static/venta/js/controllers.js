@@ -8,7 +8,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 		$scope.order_id = $stateParams.order_id;
 		$scope.nocount = null;
 		$scope.paid = false;
-		$scope.searchName="";
+		$scope.products=
 		$scope.table_selected = {
 			table: 1
 		};

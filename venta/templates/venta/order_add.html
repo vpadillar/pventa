@@ -10,6 +10,7 @@
 			</ul>
 		</section>
 		<div class="table-list" background="text">
+			<div class="tools"><input type="text" id="search_tab" placeholder="Criterio de busqueda" ng-model="searchName"></div>
 			<table class="head">
 				<colgroup>
 						<col width="250px"></col>
@@ -38,7 +39,7 @@
 						<col width="200px"></col>
 					</colgroup>
 					<tbody>
-						<tr ng-repeat="p in products">
+						<tr ng-repeat="p in products| filter:searchName">
 							<td>
 								<span>[[p.name]]</span>
 							</td>
