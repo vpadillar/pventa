@@ -14,3 +14,4 @@ $ sudo pip install django-cors-headers
 $ sudo pip install django-import-export
 $ sudo pip install html5lib==1.0b8
 $ sudo pip install html5lib
+virgilio marica cobarde, me deseccionas
