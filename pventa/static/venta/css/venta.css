@@ -200,7 +200,7 @@ nav ul{
 @media only screen and (max-width: 441px)  {
 	#category .tools{
 	    height: auto;
-	}	
+	}
 }
 
 div.add{
@@ -441,7 +441,7 @@ div.add{
 }
 
 #products .category-list ul, #order-add .category-list ul{
-	overflow: auto;	
+	overflow: auto;
 	height: calc(100% - 100px);
 	text-align: center;
 }
@@ -467,7 +467,7 @@ div.add{
 	margin: 10px;
 	width: calc(100% - 270px);
 	display: inline-block;
-} 
+}
 
  .table-list table .button{
 	width: 20px;
@@ -526,7 +526,7 @@ div.add{
 input[type="search"]{
 	border: none;
 	border-bottom: solid 1px;
-	background-color: transparent; 
+	background-color: transparent;
 	width: 100px;
 	margin-left: 20px;
 }
@@ -607,4 +607,23 @@ input[type="search"]{
 #orders .tools{
 	display: table-cell;
 	width: 200px;
+}
+
+#search_tab{
+    width: 250px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('/static/pventa/img/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+#search_tab:focus {
+    width: 100%;
 }

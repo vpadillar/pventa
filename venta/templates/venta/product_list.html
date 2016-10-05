@@ -16,7 +16,8 @@
 					AGREGAR PRODUCTO
 					<i class="material-icons">add</i>
 				</a>
-			</div>			
+			</div>
+			<div class="tools"><input type="text" id="search_tab" placeholder="Criterio de busqueda" ng-model="searchName"></div>
 			<table class="head">
 				<colgroup>
 					<col width="60%"></col>
@@ -48,7 +49,7 @@
 						<col width="40px"></col>
 					</colgroup>
 					<tbody>
-						<tr ng-repeat="p in products">
+						<tr ng-repeat="p in products | filter:searchName">
 							<td>
 								<span>[[p.name]]</span>
 							</td>
@@ -61,7 +62,7 @@
 							<th>
 								<a ng-click="goTo('product_edit', {'product_id': p.id})" class="button" color="text" background="accent">
 									<i class="material-icons">create</i>
-								</a>	
+								</a>
 							</th>
 						</tr>
 					</tbody>
