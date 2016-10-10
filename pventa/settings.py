@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'informes',
+    'informes2',
     'nested_inline',
     'venta',
     'pventa',
