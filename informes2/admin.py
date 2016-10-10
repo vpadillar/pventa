@@ -13,4 +13,28 @@ from django.contrib import admin
 from pventa.admin import admin_site
 import models
 
-admin_site.register(models.InformeCategoria)
+
+class InformeCategoriaResource(resources.ModelResource):
+    inicio = fields.Field(column_name="inicio", attribute="inicio")
+    fin = fields.Field(column_name="fin", attribute="fin")
+
+    class Meta:
+        model = models.InformeCategoria
+        fields = ['inicio', 'fin']
+    # end class
+
+    def export(self, queryset=None, *args, **kwargs):
+        return super(ProductResource, self).export(queryset, *args, **kwargs)
+    # end def
+# end class
+
+
+class InformeCategoriaAdmin(admin.ModelAdmin):
+    list_display = ['nombre', 'inicio']
+    list_filter = ['nombre', 'inicio']
+    search_fields = list_filter
+# end class
+
+
+admin_site.register(models.InformeCategoria, InformeCategoriaAdmin)
+reports.register_export(models.InformeCategoria, InformeCategoriaResource)
