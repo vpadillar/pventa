@@ -8,13 +8,17 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 		$scope.order_id = $stateParams.order_id;
 		$scope.nocount = null;
 		$scope.paid = false;
-		$scope.products=
+		$scope.products = [];
+		$scope.total_forms = 1;
+		$scope.initial = 0;
+		$scope.min = 0;
+		$scope.max = 1000;
 		$scope.table_selected = {
 			table: 1
 		};
 		if ($scope.order_id){
 			$scope.nocount = $scope.order_id;
-			$http.get('/rest/orders/'+ $scope.order_id + '/?format=json').success(function (data) {
+			$http.get('/ws/orders/'+ $scope.order_id + '/?format=json').success(function (data) {
 
 				var order = data;
 				for (var p in order.products){
@@ -33,23 +37,23 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 			}).error(function(data){
 				$scope.goTo('dashboard');
 			});
-			$http.get('/rest/settable/?format=json&order_id=' + $scope.order_id).success(function(data){
+			$http.get('/ws/settable/?order=' + $scope.order_id).success(function(data){
 				if (data[0]){
-					$scope.table_selected = data[0];
+					$scope.table_selected = data.object_list[0];
 				}
 				console.log(data);
 			});
-			$http.get('/ws/aviable/tables/' + $scope.order_id + '/?format=json')
+			$http.get('/ws/tables/?aviable=True')
 				.success(function (data) {
-					$scope.tables = data;
+					$scope.tables = data.object_list;
 			});
 		}else{
 			$http.get('/ws/nocount/').success(function(data){
 				$scope.nocount = data;
 			});
-			$http.get('/rest/tables/?format=json')
+			$http.get('/ws/tables/?format=json')
 				.success(function (data) {
-					$scope.tables = data;
+					$scope.tables = data.object_list;
 			});
 		}
 		$scope.del = function(){
@@ -58,25 +62,25 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 				var put = {
 					'canceled': true
 				};
-				$http.put('/rest/orders/' + $scope.order_id + '/', put).success(function (data){
+				$http.put('/orders/' + $scope.order_id + '/', put).success(function (data){
 					$scope.goTo("dashboard");
 				});
 			}
 		};
 
 		$scope.load_categorys = function (){
-			$http.get('/rest/categorys/?format=json&search=' + $scope.search)
+			$http.get('/ws/categorys/?search=' + $scope.search)
 				.success(function (data) {
-					$scope.categorys = data;
+					$scope.categorys = data.object_list;
 			});
 
 
 		};
 
 		$scope.load_products = function (category){
-			$http.get('/rest/products/?format=json&category__id=' + category)
+			$http.get('/ws/products/?format=json&category=' + category)
 				.success(function (data) {
-					$scope.products = data;
+					$scope.products = data.object_list;
 			});
 		};
 
@@ -120,6 +124,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 			}
 		}
 		$scope.print_order = function(success, error){
+				success();
 			/*try{
 				var data = {
 					"data": {"id": $scope.order_id + ""},
@@ -137,18 +142,24 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 			}*/
 		};
 		$scope.pay = function(){
-			var order = [];
-			for (var i in $scope.order){
-				order.push($scope.order[i]);
-			}
+
 			var post = {
+				'itemorder_set-TOTAL_FORMS': Object.keys($scope.order).length,
+				'itemorder_set-INITIAL_FORMS': $scope.initial,
+				'itemorder_set-MIN_NUM_FORMS': $scope.min,
+				'itemorder_set-MAX_NUM_FORMS': $scope.max,
 				'csrfmiddlewaretoken': csrf,
-				'products': order
 			};
+			var num = 0;
+			for (var i in $scope.order){
+				post['itemorder_set-' + num + '-product'] = $scope.order[i].product;
+				post['itemorder_set-' + num + '-count'] = $scope.order[i].count;
+				num ++;
+			}
 
 			if ($scope.order_id){
-				$http.put('/rest/orders/' + $scope.order_id + '/', post).success(function(data){
-					$http.put('/rest/settable/' + $scope.table_selected.id + '/', {
+				$http.post('/ws/form/orders/' + $scope.order_id + '/', post).success(function(data){
+					$http.put('/ws/form/settable/' + $scope.table_selected.id + '/', {
 						'table': $scope.table_selected.table,
 						'order': $scope.table_selected.order
 					})
@@ -162,9 +173,9 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 					});
 				});
 			}else{
-				$http.post('/rest/orders/', post).success(function(order){
+				$http.post('/ws/form/orders/', post).success(function(order){
 					console.log(order);
-					$http.post('/rest/settable/', {
+					$http.post('/ws/form/settable/', {
 						'table': $scope.table_selected.table,
 						'order': order.id
 					})
@@ -186,38 +197,38 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 ]);
 controllers.controller('order_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
-		$http.get('/rest/orders/?paid=3').success(function (data) {
-			$scope.orders = data;
+		$http.get('/ws/orders/?paid=3').success(function (data) {
+			$scope.orders = data.object_list;
 		});
-		$http.get('/rest/pendant/?format=json')
+		$http.get('/ws/tables/?aviable=')
 			.success(function (data) {
 				console.log(data);
-				$scope.tables = data;
+				$scope.tables = data.object_list;
 		});
 	}
 ]);
 controllers.controller('pay_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
-		$http.get('/rest/orders/?paid=3').success(function (data) {
+		$http.get('/orders/?paid=3').success(function (data) {
 			$scope.orders = data;
 		});
-		$http.get('/rest/pendant/?format=json')
+		$http.get('/pendant/?format=json')
 			.success(function (data) {
 				console.log(data);
 				$scope.tables = data;
 		});
 		$scope.paids = function(){
-			$http.get('/rest/orders/?paid=2').success(function (data) {
+			$http.get('/orders/?paid=2').success(function (data) {
 				$scope.orders = data;
 			});
 		};
 		$scope.pending = function(){
-			$http.get('/rest/orders/?paid=3').success(function (data) {
+			$http.get('/orders/?paid=3').success(function (data) {
 				$scope.orders = data;
 			});
 		};
 		$scope.all = function(){
-			$http.get('/rest/orders/').success(function (data) {
+			$http.get('/orders/').success(function (data) {
 				$scope.orders = data;
 			});
 		};
@@ -246,7 +257,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 
 		$http.get('/ws/config/').success(function (data) {
 			$scope.conf = data;
-			$http.get('/rest/orders/?format=json&id=' + $scope.order_id).success(function (data) {
+			$http.get('/orders/?format=json&id=' + $scope.order_id).success(function (data) {
 				$scope.order = data[0];
 
 				for (var p in $scope.order.products){
@@ -258,7 +269,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 				$scope.ipoconsumo = parseFloat(($scope.subtotal*$scope.conf.ipoconsumo/100).toFixed(2));
 				$scope.update_total();
 				if ($scope.order.paid){
-					$http.get('/rest/bills/' + $scope.order.bill + '/?format=json').success(function (data) {
+					$http.get('/bills/' + $scope.order.bill + '/?format=json').success(function (data) {
 						$scope.cash = parseFloat(data.cash);
 						$scope.check = parseFloat(data.check);
 						$scope.card = parseFloat(data.card);
@@ -303,7 +314,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 			}
 		};
 		$scope.get_client = function(){
-			$http.get('/rest/clients/?cc=' + $scope.cc).success(function (data) {
+			$http.get('/clients/?cc=' + $scope.cc).success(function (data) {
 				if (data[0]){
 					$scope.name = data[0].name;
 					$scope.tel = data[0].tel;
@@ -373,14 +384,14 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 				'total': $scope.total,
 				'totaltip': $scope.totaltip
 			};
-			$http.post('/rest/bills/', post).then(function (data) {
+			$http.post('/bills/', post).then(function (data) {
 				console.log(data);
 				var put = {
 					'bill': data.data.id,
 				    "paid": true
 				};
 				console.log(put);
-				$http.put('/rest/orders/' + $scope.order_id + '/', put)
+				$http.put('/orders/' + $scope.order_id + '/', put)
 					.then(function(data){
 						$scope.order = data;
 						$scope.pv_print();
@@ -404,14 +415,14 @@ controllers.controller('product_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
 		$scope.search = "";
 		$scope.load_categorys = function (){
-			$http.get('/rest/categorys/?format=json&search=' + $scope.search)
+			$http.get('/categorys/?format=json&search=' + $scope.search)
 			.success(function (data) {
 				$scope.categorys = data;
 			});
 		};
 		$scope.load_products = function (category_id, category_name){
 			$scope.category_name = category_name;
-			$http.get('/rest/products/?format=json&category__id=' + category_id)
+			$http.get('/ws/products/?format=json&category__id=' + category_id)
 				.success(function (data) {
 					$scope.products = data;
 			});
@@ -424,7 +435,7 @@ controllers.controller('category_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
 		$scope.search = "";
 		$scope.load_categorys = function (){
-			$http.get('/rest/categorys/?format=json&search=' + $scope.search).success(function (data) {
+			$http.get('/categorys/?format=json&search=' + $scope.search).success(function (data) {
 				$scope.categorys = data;
 			});
 		};
@@ -556,9 +567,9 @@ controllers.controller('category_controller', ['$scope', '$http', '$stateParams'
 					'name': 'value',
 					'image': {
 						'type': 'list',
-						'url': '/rest/images/?format=json'
+						'url': '/images/?format=json'
 					}
-				}, '/rest/categorys/', 'Nueva', 'Categoría'
+				}, '/categorys/', 'Nueva', 'Categoría'
 			);
 	}
 ]);
@@ -571,13 +582,13 @@ controllers.controller('product_controller', ['$scope', '$http', '$stateParams',
 					'price': 'float',
 					'presentation': {
 						'type': 'list',
-						'url': '/rest/presentation/?format=json'
+						'url': '/presentation/?format=json'
 					},
 					'category': {
 						'type': 'list',
-						'url': '/rest/categorys/?format=json'
+						'url': '/categorys/?format=json'
 					}
-				}, '/rest/products/', 'Nuevo', 'Producto'
+				}, '/ws/products/', 'Nuevo', 'Producto'
 			);
 	}
 ]);
@@ -593,7 +604,7 @@ controllers.controller('login_controller', ['$scope', '$http',
 				'password': $scope.password
 			};
 
-			$http.post('/auth/login/', post).success(function (data){
+			$http.post('/ws/login/', post).success(function (data){
 				window.location = "/";
 			}).error(function(data){
 				var button = document.getElementById("login-button");

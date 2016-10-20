@@ -1,11 +1,25 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.db.models import Q
+from supra import views as supra
 import models
-import json
 
-def aviable_tables(request, order):
-	tables = models.Table.objects.exclude(Q(settable__order__paid=False, settable__order__canceled=False) & ~Q(settable__order=order))
-	jtabls = json.dumps(list(tables.values()))
-	return HttpResponse(jtabls, content_type="application/json")
-#end def
+class TablesListView(supra.SupraListView):
+	model = models.Table
+	list_filter = ['aviable']
+	list_display = ['name', 'aviable', 'id', 'order_id']
+
+	def get_queryset(self):
+		queryset = super(TablesListView, self).get_queryset()
+		queryset=queryset.extra(select={'order_id': 'select o.id from venta_order as o join restorant_settable as s on s.order_id = o.id and s.table_id = restorant_table.id'})
+		return queryset
+	# end def
+# end class
+
+
+class SetTableFormView(supra.SupraFormView):
+	model = models.SetTable
+	body = True
+# end class
+
+class SetTableListView(supra.SupraListView):
+	model = models.SetTable
+	list_filter = ['order']
+# end class

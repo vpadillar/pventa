@@ -177,8 +177,7 @@ class BillAdmin(admin.ModelAdmin):
 #end class
 
 class ItemOrderAdmin(admin.StackedInline):
-	model = models.Order.products.through
-	readonly_fields = ('itemorder', )
+	model = models.ItemOrder
 	def has_add_permission(self, request, obj=None):
 		return False
 	#end def
@@ -192,7 +191,7 @@ class OrderAdmin(admin.ModelAdmin):
 	model = models.Order
 	list_display = ['client', 'date']
 	inlines = [ItemOrderAdmin]
-	exclude = ['products']
+	exclude = []
 
 	def get_queryset(self, request):
 		user = CuserMiddleware.get_user()

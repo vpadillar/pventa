@@ -1,6 +1,6 @@
 
 from django.conf.urls import url, include
-import views 
+import views
 
 urlpatterns = [
     url(r'^$', views.PvTemplateView.as_view(template_name="venta/index.html")),
@@ -18,4 +18,10 @@ urlpatterns = [
     url(r'^product_list.html', views.PvTemplateView.as_view(template_name="venta/product_list.html")),
     url(r'^product_add.html', views.PvTemplateView.as_view(template_name="venta/product_add.html")),
     url(r'^login/', views.PvTemplateView.as_view(template_name="venta/login.html")),
+    #supra
+    url(r'^ws/categorys/', views.CategoyListView.as_view()),
+    url(r'^ws/orders/', views.OrderListView.as_view()),
+    url(r'^ws/form/orders/', views.OrderFormView.as_view()),
+    url(r'^ws/products/', views.ProductListView.as_view()),
+    url(r'^ws/login/', views.Login.as_view()),
 ]

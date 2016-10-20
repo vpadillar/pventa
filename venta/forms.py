@@ -53,3 +53,35 @@ class ProviderForm(forms.ModelForm):
 		return proveedor
 	#end def
 #end class
+
+class OrderForm(forms.ModelForm):
+	class Meta:
+		exclude = ["service", "waiter", "products"]
+		model = models.Order
+	# end class
+
+	def save(self, commit = True):
+		order = super(OrderForm, self).save(commit=False)
+		usuario = CuserMiddleware.get_user()
+		order.service = models.Service.objects.filter(userservice__user = usuario).first()
+		order.waiter = usuario
+		order.save()
+		return order
+	#end def
+# end class
+
+class ItemOrderForm(forms.ModelForm):
+	class Meta:
+		exclude = []
+		model = models.ItemOrder
+	# end class
+
+	def save(self, commit = True):
+		#print self.data
+		#order = super(ItemOrderForm, self).save(commit=False)
+		#print "ALLLL"
+		#order.save()
+		#return order
+		pass
+	#end def
+# end class

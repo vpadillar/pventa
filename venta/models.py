@@ -263,24 +263,10 @@ class Bill(models.Model):
 	#end def
 #end class
 
-class ItemOrder(models.Model):
-	product = models.ForeignKey(Product, verbose_name="Producto")
-	count = models.IntegerField(verbose_name="Cantidad")
-
-	class Meta:
-		verbose_name = "Item de Orden"
-		verbose_name_plural = "Items de Orden"
-	#end class
-
-	def __unicode__(self):
-		return "%s x%s" % (str(self.product), str(self.count))
-	#end def
-#end class
 
 class Order(models.Model):
 	service = models.ForeignKey(Service, verbose_name="Servicio")
 	client = models.ForeignKey(Client, null=True, blank=True, verbose_name="Cliente")
-	products = models.ManyToManyField(ItemOrder, verbose_name="Productos")
 	date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha")
 	bill = models.OneToOneField(Bill, null=True, blank=True, verbose_name="Factura")
 	canceled = models.BooleanField(default=False, verbose_name="Cancelado")
@@ -313,6 +299,22 @@ class Order(models.Model):
 			cero = ""
 		#end if
 		return "%s%s-%s-%s" % (cero, str(self.date.day), (months[self.date.month]), str(self.date.year))
+	#end def
+#end class
+
+
+class ItemOrder(models.Model):
+	order = models.ForeignKey(Order)
+	product = models.ForeignKey(Product, verbose_name="Producto")
+	count = models.IntegerField(verbose_name="Cantidad")
+
+	class Meta:
+		verbose_name = "Item de Orden"
+		verbose_name_plural = "Items de Orden"
+	#end class
+
+	def __unicode__(self):
+		return "%s x%s" % (str(self.product), str(self.count))
 	#end def
 #end class
 

@@ -1,4 +1,4 @@
-var controllers = angular.module('controllers', []);
+	var controllers = angular.module('controllers', []);
 
 controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 	function ($scope, $http, $stateParams) {
@@ -13,8 +13,8 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 		};
 		if ($scope.order_id){
 			$scope.nocount = $scope.order_id;
-			$http.get('/rest/orders/'+ $scope.order_id + '/?format=json').success(function (data) {
-				
+			$http.get('/orders/'+ $scope.order_id + '/?format=json').success(function (data) {
+
 				var order = data;
 				for (var p in order.products){
 					var product_obj = order.products[p];
@@ -25,19 +25,19 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 						'count': product_obj.count,
 						'total_price': product_obj.product_obj.price * product_obj.count
 					};
-					$scope.order[product_obj.product] = product;	
+					$scope.order[product_obj.product] = product;
 				}
 				$scope.paid = data.paid;
 				update_total();
 			}).error(function(data){
 				$scope.goTo('dashboard');
 			});
-			$http.get('/rest/settable/?format=json&order_id=' + $scope.order_id).success(function(data){
+			$http.get('/settable/?format=json&order_id=' + $scope.order_id).success(function(data){
 				if (data[0]){
-					$scope.table_selected = data[0];	
+					$scope.table_selected = data[0];
 				}
 				console.log(data);
-			});	
+			});
 			$http.get('/ws/aviable/tables/' + $scope.order_id + '/?format=json')
 				.success(function (data) {
 					$scope.tables = data;
@@ -46,7 +46,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 			$http.get('/ws/nocount/').success(function(data){
 				$scope.nocount = data;
 			});
-			$http.get('/rest/tables/?format=json')
+			$http.get('/tables/?format=json')
 				.success(function (data) {
 					$scope.tables = data;
 			});
@@ -57,23 +57,23 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 				var put = {
 					'canceled': true
 				};
-				$http.put('/rest/orders/' + $scope.order_id + '/', put).success(function (data){
+				$http.put('/orders/' + $scope.order_id + '/', put).success(function (data){
 					$scope.goTo("dashboard");
 				});
 			}
 		};
 
 		$scope.load_categorys = function (){
-			$http.get('/rest/categorys/?format=json&search=' + $scope.search)
+			$http.get('/categorys/?search=' + $scope.search)
 				.success(function (data) {
 					$scope.categorys = data;
 			});
-			
-			
+
+
 		};
 
 		$scope.load_products = function (category){
-			$http.get('/rest/products/?format=json&category__id=' + category)
+			$http.get('/products/?format=json&category__id=' + category)
 				.success(function (data) {
 					$scope.products = data;
 			});
@@ -91,7 +91,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 						'count': count - 1,
 						'total_price':product_obj.price * (count - 1)
 					};
-					$scope.order[product_obj.id] = product;					
+					$scope.order[product_obj.id] = product;
 				}
 			}
 			update_total();
@@ -147,8 +147,8 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 			};
 
 			if ($scope.order_id){
-				$http.put('/rest/orders/' + $scope.order_id + '/', post).success(function(data){
-					$http.put('/rest/settable/' + $scope.table_selected.id + '/', {
+				$http.put('/orders/' + $scope.order_id + '/', post).success(function(data){
+					$http.put('/settable/' + $scope.table_selected.id + '/', {
 						'table': $scope.table_selected.table,
 						'order': $scope.table_selected.order
 					})
@@ -162,9 +162,9 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 					});
 				});
 			}else{
-				$http.post('/rest/orders/', post).success(function(order){
+				$http.post('/orders/', post).success(function(order){
 					console.log(order);
-					$http.post('/rest/settable/', {
+					$http.post('/settable/', {
 						'table': $scope.table_selected.table,
 						'order': order.id
 					})
@@ -177,7 +177,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 							$scope.goTo('orders_edit', {'order_id': order.id});
 						});
 					});
-				});				
+				});
 			}
 		};
 
@@ -186,10 +186,10 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 ]);
 controllers.controller('order_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
-		$http.get('/rest/orders/?paid=3').success(function (data) {
+		$http.get('/orders/?paid=3').success(function (data) {
 			$scope.orders = data;
 		});
-		$http.get('/rest/pendant/?format=json')
+		$http.get('/pendant/?format=json')
 			.success(function (data) {
 				console.log(data);
 				$scope.tables = data;
@@ -198,26 +198,26 @@ controllers.controller('order_list_controller', ['$scope', '$http',
 ]);
 controllers.controller('pay_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
-		$http.get('/rest/orders/?paid=3').success(function (data) {
+		$http.get('/orders/?paid=3').success(function (data) {
 			$scope.orders = data;
 		});
-		$http.get('/rest/pendant/?format=json')
+		$http.get('/pendant/?format=json')
 			.success(function (data) {
 				console.log(data);
 				$scope.tables = data;
 		});
 		$scope.paids = function(){
-			$http.get('/rest/orders/?paid=2').success(function (data) {
+			$http.get('/orders/?paid=2').success(function (data) {
 				$scope.orders = data;
 			});
 		};
 		$scope.pending = function(){
-			$http.get('/rest/orders/?paid=3').success(function (data) {
+			$http.get('/orders/?paid=3').success(function (data) {
 				$scope.orders = data;
 			});
 		};
 		$scope.all = function(){
-			$http.get('/rest/orders/').success(function (data) {
+			$http.get('/orders/').success(function (data) {
 				$scope.orders = data;
 			});
 		};
@@ -225,7 +225,7 @@ controllers.controller('pay_list_controller', ['$scope', '$http',
 ]);
 controllers.controller('dashboard_controller', ['$scope', '$http',
 	function ($scope, $http) {
-		
+
 	}
 ]);
 controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
@@ -246,19 +246,19 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 
 		$http.get('/ws/config/').success(function (data) {
 			$scope.conf = data;
-			$http.get('/rest/orders/?format=json&id=' + $scope.order_id).success(function (data) {
+			$http.get('/orders/?format=json&id=' + $scope.order_id).success(function (data) {
 				$scope.order = data[0];
 
 				for (var p in $scope.order.products){
 					$scope.subtotal += $scope.order.products[p].count*$scope.order.products[p].product_obj.price;
 				}
 				$scope.tip = parseFloat(($scope.subtotal*$scope.conf.propina/100).toFixed(2));
-						
+
 				$scope.iva = $scope.subtotal*$scope.conf.iva/100;
 				$scope.ipoconsumo = parseFloat(($scope.subtotal*$scope.conf.ipoconsumo/100).toFixed(2));
 				$scope.update_total();
 				if ($scope.order.paid){
-					$http.get('/rest/bills/' + $scope.order.bill + '/?format=json').success(function (data) {
+					$http.get('/bills/' + $scope.order.bill + '/?format=json').success(function (data) {
 						$scope.cash = parseFloat(data.cash);
 						$scope.check = parseFloat(data.check);
 						$scope.card = parseFloat(data.card);
@@ -273,7 +273,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 				}
 			});
 		});
-		
+
 		$scope.clear = function(self){
 			$scope.checked = false;
 			if ($scope[self] == "0"){
@@ -303,7 +303,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 			}
 		};
 		$scope.get_client = function(){
-			$http.get('/rest/clients/?cc=' + $scope.cc).success(function (data) {
+			$http.get('/clients/?cc=' + $scope.cc).success(function (data) {
 				if (data[0]){
 					$scope.name = data[0].name;
 					$scope.tel = data[0].tel;
@@ -373,16 +373,16 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 				'total': $scope.total,
 				'totaltip': $scope.totaltip
 			};
-			$http.post('/rest/bills/', post).success(function (data) {
+			$http.post('/bills/', post).success(function (data) {
 				var put = {
 					'bill': data.id,
 				    "paid": true
 				};
-				$http.put('/rest/orders/' + $scope.order_id + '/', put)
+				$http.put('/orders/' + $scope.order_id + '/', put)
 					.success(function(data){
 						$scope.order = data;
 						$scope.pv_print();
-				});	
+				});
 			});
 		};
 	}
@@ -391,29 +391,29 @@ controllers.controller('product_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
 		$scope.search = "";
 		$scope.load_categorys = function (){
-			$http.get('/rest/categorys/?format=json&search=' + $scope.search)
+			$http.get('/categorys/?format=json&search=' + $scope.search)
 			.success(function (data) {
 				$scope.categorys = data;
-			});			
+			});
 		};
 		$scope.load_products = function (category_id, category_name){
 			$scope.category_name = category_name;
-			$http.get('/rest/products/?format=json&category__id=' + category_id)
+			$http.get('/products/?format=json&category__id=' + category_id)
 				.success(function (data) {
 					$scope.products = data;
 			});
 		};
 		$scope.load_categorys();
-		
+
 	}
 ]);
 controllers.controller('category_list_controller', ['$scope', '$http',
 	function ($scope, $http) {
 		$scope.search = "";
 		$scope.load_categorys = function (){
-			$http.get('/rest/categorys/?format=json&search=' + $scope.search).success(function (data) {
+			$http.get('/categorys/?format=json&search=' + $scope.search).success(function (data) {
 				$scope.categorys = data;
-			});			
+			});
 		};
 		$scope.load_categorys();
 
@@ -438,7 +438,7 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
 		}
 	}
 	function init_list(index, data_callback){
-		
+
 		$http.get(attributes[index]['url'])
 			.success(function(data){
 				$scope[object_name + '_' + index] = {};
@@ -502,7 +502,7 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
 		}else{
 			send = $http.post(url, post);
 		}
-		
+
 		send.success(function (data){
 			if (!$scope[object_name + '_id']){
 				for (var i in attributes){
@@ -538,33 +538,33 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
 
 controllers.controller('category_controller', ['$scope', '$http', '$stateParams',
 	function ($scope, $http, $stateParams) {
-		default_crud_controller($scope, $http, $stateParams, 
+		default_crud_controller($scope, $http, $stateParams,
 				'category', {
 					'name': 'value',
 					'image': {
 						'type': 'list',
-						'url': '/rest/images/?format=json'
+						'url': '/images/?format=json'
 					}
-				}, '/rest/categorys/', 'Nueva', 'Categoría'
+				}, '/categorys/', 'Nueva', 'Categoría'
 			);
 	}
 ]);
 
 controllers.controller('product_controller', ['$scope', '$http', '$stateParams',
 	function ($scope, $http, $stateParams) {
-		default_crud_controller($scope, $http, $stateParams, 
+		default_crud_controller($scope, $http, $stateParams,
 				'product', {
 					'name': 'value',
 					'price': 'float',
 					'presentation': {
 						'type': 'list',
-						'url': '/rest/presentation/?format=json'
+						'url': '/presentation/?format=json'
 					},
 					'category': {
 						'type': 'list',
-						'url': '/rest/categorys/?format=json'
+						'url': '/categorys/?format=json'
 					}
-				}, '/rest/products/', 'Nuevo', 'Producto' 
+				}, '/products/', 'Nuevo', 'Producto'
 			);
 	}
 ]);
