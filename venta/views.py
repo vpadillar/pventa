@@ -4,9 +4,32 @@ from cuser.middleware import CuserMiddleware
 from django.middleware.csrf import get_token
 from django.views.generic.base import TemplateView
 from supra import views as supra
+from django.contrib.auth.models import Group
 import models
 import forms
 import json
+
+
+class GroupListView(supra.SupraListView):
+	model = Group
+	def get_queryset(self):
+		queryset = super(GroupListView, self).get_queryset()
+		user = CuserMiddleware.get_user()
+		queryset = queryset.filter(user = user)
+		return queryset
+	# end def
+# end class
+
+class ClientListView(supra.SupraListView):
+	model = models.Client
+	list_filter = ['cc']
+	def get_queryset(self):
+		queryset = super(ClientListView, self).get_queryset()
+		user = CuserMiddleware.get_user()
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	# end def
+# end class
 
 class Login(supra.SupraSession):
 	body = True
@@ -24,10 +47,22 @@ class CategoyListView(supra.SupraListView):
 	# end def
 # end class
 
+class OrderDetailView(supra.SupraDetailView):
+	model = models.Order
+
+# end class
+# end class
+
+class OrderDeleteView(supra.SupraDeleteView):
+	model = models.Order
+
+# end class
+
 class OrderListView(supra.SupraListView):
 	model = models.Order
 	search_fields = ['pk']
 	list_filter = ['settable__table__aviable']
+	list_display = ['id', 'bill', 'canceled', 'casher', 'client', 'date', 'paid', 'pk', 'service', 'waiter', 'bill__id']
 
 	def get_queryset(self):
 		queryset = super(OrderListView, self).get_queryset()
@@ -43,11 +78,14 @@ class OrderListView(supra.SupraListView):
 class ProductListView(supra.SupraListView):
 	model = models.Product
 	search_fields = ['name']
+	list_filter = ['itemorder__order']
 
 	def get_queryset(self):
 		queryset = super(ProductListView, self).get_queryset()
 		category = self.request.GET.get('category', False)
-		queryset=queryset.filter(category__pk = category)
+		if category:
+			queryset=queryset.filter(category__pk = category)
+		# end if
 		return queryset
 	# end def
 # end class
@@ -59,11 +97,27 @@ class IntemOrderInlineFormView(supra.SupraInlineFormView):
 
 # end class
 
+class ItemOrderListView(supra.SupraListView):
+	model = models.ItemOrder
+	list_filter = ['order']
+	list_display = ['order_id', 'count', 'id', 'product_id', 'product__name', 'product__price']
+# end class
+
 class OrderFormView(supra.SupraFormView):
 	model = models.Order
 	form_class = forms.OrderForm
 	inlines = [IntemOrderInlineFormView]
 	body = True
+# end class
+
+class BillFormView(supra.SupraFormView):
+	model = models.Bill
+	form_class = forms.BillForm
+	body = True
+# end class
+
+class BillDetailView(supra.SupraDetailView):
+	model = models.Bill
 # end class
 
 class PvTemplateView(TemplateView):

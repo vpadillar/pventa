@@ -1,5 +1,6 @@
 from supra import views as supra
 import models
+import forms
 
 class TablesListView(supra.SupraListView):
 	model = models.Table
@@ -13,9 +14,9 @@ class TablesListView(supra.SupraListView):
 	# end def
 # end class
 
-
 class SetTableFormView(supra.SupraFormView):
 	model = models.SetTable
+	form_class = forms.SetTableForm
 	body = True
 # end class
 

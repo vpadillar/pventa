@@ -70,18 +70,26 @@ class OrderForm(forms.ModelForm):
 	#end def
 # end class
 
+class BillForm(forms.ModelForm):
+	class Meta:
+		exclude = ["service", "waiter", ]
+		model = models.Bill
+	# end class
+
+	def save(self, commit = True):
+		bill = super(BillForm, self).save(commit=False)
+		usuario = CuserMiddleware.get_user()
+		bill.service = models.Service.objects.filter(userservice__user = usuario).first()
+		bill.waiter = usuario
+		bill.save()
+		return bill
+	#end def
+# end class
+
 class ItemOrderForm(forms.ModelForm):
 	class Meta:
 		exclude = []
 		model = models.ItemOrder
 	# end class
 
-	def save(self, commit = True):
-		#print self.data
-		#order = super(ItemOrderForm, self).save(commit=False)
-		#print "ALLLL"
-		#order.save()
-		#return order
-		pass
-	#end def
 # end class
