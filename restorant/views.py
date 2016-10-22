@@ -1,6 +1,7 @@
 from supra import views as supra
 import models
 import forms
+from cuser.middleware import CuserMiddleware
 
 class TablesListView(supra.SupraListView):
 	model = models.Table
@@ -9,7 +10,8 @@ class TablesListView(supra.SupraListView):
 
 	def get_queryset(self):
 		queryset = super(TablesListView, self).get_queryset()
-		queryset=queryset.extra(select={'order_id': 'select o.id from venta_order as o join restorant_settable as s on s.order_id = o.id and s.table_id = restorant_table.id'})
+		user = CuserMiddleware.get_user()
+		queryset=queryset.filter(service__userservice__user = user).extra(select={'order_id': 'select o.id from venta_order as o join restorant_settable as s on s.order_id = o.id and s.table_id = restorant_table.id'})
 		return queryset
 	# end def
 # end class

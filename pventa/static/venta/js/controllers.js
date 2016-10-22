@@ -255,27 +255,27 @@ controllers.controller('order_list_controller', ['$scope', '$http',
 ]);
 controllers.controller('pay_list_controller', ['$scope', '$http',
     function($scope, $http) {
-        $http.get('/orders/?paid=3').success(function(data) {
-            $scope.orders = data;
+        $http.get('/ws/orders/?paid=3').success(function(data) {
+            $scope.orders = data.object_list;
         });
-        $http.get('/pendant/?format=json')
+        $http.get('/ws/tables/?aviable=')
             .success(function(data) {
                 console.log(data);
-                $scope.tables = data;
+                $scope.tables = data.object_list;
             });
         $scope.paids = function() {
-            $http.get('/orders/?paid=2').success(function(data) {
-                $scope.orders = data;
+            $http.get('/ws/orders/?paid=True').success(function(data) {
+                $scope.orders = data.object_list;
             });
         };
         $scope.pending = function() {
-            $http.get('/orders/?paid=3').success(function(data) {
-                $scope.orders = data;
+            $http.get('/ws/orders/?paid=').success(function(data) {
+                $scope.orders = data.object_list;
             });
         };
         $scope.all = function() {
-            $http.get('/orders/').success(function(data) {
-                $scope.orders = data;
+            $http.get('/ws/orders/').success(function(data) {
+                $scope.orders = data.object_list;
             });
         };
     }
@@ -303,8 +303,8 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
 
         $http.get('/ws/config/').success(function(data) {
             $scope.conf = data;
-            $http.get('/ws/order/' + $scope.order_id + '/').success(function(data) {
-                $scope.order = data;
+            $http.get('/ws/orders/?id=' + $scope.order_id).success(function(data) {
+                $scope.order = data.object_list[0];
                 $http.get('/ws/itemorders/?order=' + $scope.order_id).success(function(data) {
                   $scope.itemorders = data.object_list;
                   for (var i in $scope.itemorders) {
@@ -316,6 +316,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                   $scope.ipoconsumo = parseFloat(($scope.subtotal * $scope.conf.ipoconsumo / 100).toFixed(2));
                   $scope.update_total();
                   if ($scope.order.paid) {
+                    console.log($scope.order);
                       $http.get('/ws/bill/' + $scope.order.bill__id + '/?format=json').success(function(data) {
                           $scope.cash = parseFloat(data.cash);
                           $scope.check = parseFloat(data.check);
@@ -394,6 +395,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                 window.location.reload();
             }, function(data) {
                 alert("Ocurrió un error al intentar imprimir");
+                window.location.reload();
             });
         }
         $scope.save = function() {
@@ -422,7 +424,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                 'disscount': $scope.disscounts,
                 'products': '{}',//JSON.stringify($scope.itemorders),
                 'cc': $scope.cc,
-                'name': 'factura1',
+                'name': $scope.name,
                 'tel': $scope.tel,
                 'tip': $scope.tip,
                 'casher': 'no-set',

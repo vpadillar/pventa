@@ -1,6 +1,7 @@
 from django import forms
 from cuser.middleware import CuserMiddleware
 import models
+from restorant.models import Table
 
 class SellCreateForm(forms.ModelForm):
 	class Meta:
@@ -66,8 +67,11 @@ class OrderForm(forms.ModelForm):
 		order.service = models.Service.objects.filter(userservice__user = usuario).first()
 		order.waiter = usuario
 		order.save()
+		if order.paid:
+			Table.objects.filter(settable__order = order).update(aviable=True)
+		# end if
 		return order
-	#end def
+	# end def
 # end class
 
 class BillForm(forms.ModelForm):

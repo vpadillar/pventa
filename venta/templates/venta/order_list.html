@@ -77,8 +77,8 @@
 			</div>
 			<div class="scroll tables">
 				<ul>
-					<li ng-repeat="t in tables" ng-click="goTo('orders_edit', {'table_id':t.order_id})">
-						<span>[[t.name]]</span>
+					<li ng-repeat="t in tables" ng-click="goTo('orders_edit', {'order_id':t.order_id})">
+						<span>[[t.name]][[t.order_id]]</span>
 					</li>
 				</ul>
 			</div>

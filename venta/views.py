@@ -55,14 +55,15 @@ class OrderDetailView(supra.SupraDetailView):
 
 class OrderDeleteView(supra.SupraDeleteView):
 	model = models.Order
+	list_display = ['id', 'bill', 'canceled', 'casher', 'client', 'date', 'paid', 'pk', 'service', 'waiter', 'bill__id']
 
 # end class
 
 class OrderListView(supra.SupraListView):
 	model = models.Order
-	search_fields = ['pk']
-	list_filter = ['settable__table__aviable']
-	list_display = ['id', 'bill', 'canceled', 'casher', 'client', 'date', 'paid', 'pk', 'service', 'waiter', 'bill__id']
+	search_fields = ['id']
+	list_filter = ['settable__table__aviable', 'id', 'paid']
+	list_display = ['id', 'bill', 'canceled', 'products', 'total', 'casher', 'client', 'date', 'paid', 'pk', 'service', 'waiter', 'bill__id']
 
 	def get_queryset(self):
 		queryset = super(OrderListView, self).get_queryset()
