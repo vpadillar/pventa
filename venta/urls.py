@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^ws/form/orders/(?P<pk>\d+)/$', views.OrderFormView.as_view()),
     url(r'^ws/products/$', views.ProductListView.as_view()),
     url(r'^ws/login/$', views.Login.as_view()),
+    url(r'^ws/login/impresora/$', views.LoginImpresora.as_view()),
 ]

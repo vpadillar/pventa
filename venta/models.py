@@ -350,6 +350,17 @@ class ProductRequest(models.Model):
 	#end def
 #end class
 
+class Prueba(models.Model):
+	nombre = models.CharField(max_length=45)
+	edad = models.IntegerField(verbose_name="Edad lol")
+	class Meta:
+		verbose_name = "Prueba"
+		verbose_name_plural = "Pruebas"
+	#end class
+
+	def __unicode__(self):
+		return nombre
+#end class
 
 class ItemRequest(models.Model):
 	productrequest = models.ForeignKey(ProductRequest, verbose_name="Petición de producto")

@@ -35,6 +35,10 @@ class Login(supra.SupraSession):
 	body = True
 # end class
 
+class LoginImpresora(supra.SupraSession):
+	pass
+# end class
+
 class CategoyListView(supra.SupraListView):
 	model = models.Category
 	search_fields = ['name']

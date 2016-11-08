@@ -70,7 +70,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
             $http.get('/ws/nocount/').success(function(data) {
                 $scope.nocount = data;
             });
-            $http.get('/ws/tables/?format=json')
+            $http.get('/ws/tables/?aviable=True')
                 .success(function(data) {
                     $scope.tables = data.object_list;
                 });
@@ -392,7 +392,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
         };
         $scope.pv_print = function() {
             $scope.print_bill(function(data) {
-                window.location.reload();
+                //window.location.reload();
             }, function(data) {
                 alert("Ocurrió un error al intentar imprimir");
                 window.location.reload();
@@ -422,7 +422,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                 'check': $scope.check,
                 'card': $scope.card,
                 'disscount': $scope.disscounts,
-                'products': '{}',//JSON.stringify($scope.itemorders),
+                'products': JSON.stringify($scope.itemorders),
                 'cc': $scope.cc,
                 'name': $scope.name,
                 'tel': $scope.tel,
