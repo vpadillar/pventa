@@ -8,11 +8,30 @@ from datetime import datetime
 from django.utils import timezone
 from django.db.models import Count, Sum
 
+
+class Config(models.Model):
+	name = models.CharField(max_length=45)
+	ipoconsumo = models.FloatField(default=0)
+	iva = models.FloatField(default=0)
+	propina = models.FloatField(default=0)
+	impresora = models.BooleanField(default=True)
+
+	class Meta:
+		verbose_name = "Configuracion"
+		verbose_name_plural = "Tu configuracion"
+	#end class
+
+	def __unicode__(self):
+		return self.name
+	#end def
+#end class
+
 class Service(models.Model):
 	name = models.CharField(max_length=45, unique=True, verbose_name="Nombre")
 	code = models.CharField(max_length=45, unique=True, db_index=True, verbose_name="Codigo")
 	printer = models.CharField(max_length=100)
 	moviles = models.TextField()
+	configuracion = models.ForeignKey(Config)
 
 
 	class Meta:
@@ -315,20 +334,6 @@ class ItemOrder(models.Model):
 
 	def __unicode__(self):
 		return "%s x%s" % (str(self.product), str(self.count))
-	#end def
-#end class
-
-class Config(models.Model):
-	ipoconsumo = models.FloatField(default=0)
-	iva = models.FloatField(default=0)
-	propina = models.FloatField(default=0)
-	class Meta:
-		verbose_name = "Configuracion"
-		verbose_name_plural = "Tu configuracion"
-	#end class
-
-	def __unicode__(self):
-		return "configuracion"
 	#end def
 #end class
 

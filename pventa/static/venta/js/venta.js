@@ -1,6 +1,6 @@
 /**
 * @name: Venta JS
-* 
+*
 **/
 var venta_app = angular.module('venta_app', [
 	'ui.router',
@@ -18,7 +18,7 @@ venta_app.controller('main_controller',function($scope, $http, $state){
 		$state.go(url, data);
 	};
 	$scope.logout = function(url, data){
-		$http.delete('/auth/login/').success(function(){
+		$http.delete('/ws/login/').success(function(){
 			window.location = "";
 		});
 	};
@@ -27,7 +27,7 @@ venta_app.controller('main_controller',function($scope, $http, $state){
 			menu.setAttribute("style", "display: none;");
 		}else{
 			menu.removeAttribute("style");
-		}		
+		}
 	}
 	window.addEventListener('hashchange', function() {
 		menu_magic();

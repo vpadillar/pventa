@@ -42,6 +42,12 @@ class LoginImpresora(supra.SupraSession):
 class CategoyListView(supra.SupraListView):
 	model = models.Category
 	search_fields = ['name']
+	list_filter = ['pk']
+	list_display = ['id', 'name', 'image']
+
+	class Render:
+		image = 'image_id'
+	# end class
 
 	def get_queryset(self):
 		queryset = super(CategoyListView, self).get_queryset()
@@ -51,10 +57,33 @@ class CategoyListView(supra.SupraListView):
 	# end def
 # end class
 
+class ImageListView(supra.SupraListView):
+	model = models.Image
+	search_fields = ['name']
+	list_filter = ['pk']
+
+	def get_queryset(self):
+		queryset = super(ImageListView, self).get_queryset()
+		user = CuserMiddleware.get_user()
+		queryset=queryset.filter(service__userservice__user = user)
+		return queryset
+	# end def
+# end class
+
+class CategoryFormView(supra.SupraFormView):
+	model = models.Category
+	form_class = forms.CategoryForm
+	body = True
+# end class
+
+
+class CategoryDeleteView(supra.SupraDeleteView):
+	model = models.Category
+# end class
+
 class OrderDetailView(supra.SupraDetailView):
 	model = models.Order
 
-# end class
 # end class
 
 class OrderDeleteView(supra.SupraDeleteView):
@@ -76,14 +105,20 @@ class OrderListView(supra.SupraListView):
 			'products': 'select count(i.id) from venta_itemorder as i where i.order_id = venta_order.id',
 			'total': 'select sum(p.price*i.count) from venta_itemorder as i join venta_product as p on i.product_id=p.id and i.order_id=venta_order.id'
 		})
-		return queryset
+		return queryset.order_by('-pk')
 	# end def
 # end class
 
 class ProductListView(supra.SupraListView):
 	model = models.Product
 	search_fields = ['name']
-	list_filter = ['itemorder__order']
+	list_filter = ['itemorder__order', 'pk']
+	list_display = ['id', 'name', 'price', 'method', 'presentation', 'category', 'presentation__name']
+
+	class Render:
+		presentation = 'presentation_id'
+		category = 'category_id'
+	# end class
 
 	def get_queryset(self):
 		queryset = super(ProductListView, self).get_queryset()
@@ -94,6 +129,29 @@ class ProductListView(supra.SupraListView):
 		return queryset
 	# end def
 # end class
+
+class ProductFormView(supra.SupraFormView):
+	model = models.Product
+	body = True
+#end class
+
+class ProductDeleteView(supra.SupraDeleteView):
+	model = models.Product
+#end class
+
+class PresentationListView(supra.SupraListView):
+	model = models.Presentation
+	search_fields = ['name']
+	list_filter = ['pk', 'name']
+
+	def get_queryset(self):
+		queryset = super(PresentationListView, self).get_queryset()
+		user = CuserMiddleware.get_user()
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
+#end class
 
 class IntemOrderInlineFormView(supra.SupraInlineFormView):
 	model = models.ItemOrder
@@ -158,11 +216,13 @@ def token(request):
 #end def
 
 def config(request):
-	config, create = models.Config.objects.get_or_create()
+	user = CuserMiddleware.get_user()
+	config = models.Config.objects.filter(service__userservice__user=user).first()
 	sjson = {
 		'ipoconsumo': config.ipoconsumo,
 		'propina': config.propina,
-		'iva': config.iva
+		'iva': config.iva,
+		'impresora': config.impresora
 	}
 	return HttpResponse(json.dumps(sjson), content_type="application/json")
 #end def

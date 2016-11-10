@@ -29,6 +29,7 @@ class ProductoForm(forms.ModelForm):
 class CellarForm(forms.ModelForm):
 
 	class Meta:
+		model = models.Cellar
 		exclude = ["service"]
 	#end class
 
@@ -37,6 +38,23 @@ class CellarForm(forms.ModelForm):
 		usuario = CuserMiddleware.get_user()
 		bodega.service = models.Service.objects.filter(userservice__user = usuario).first()
 		return bodega
+	#end def
+
+#end class
+
+class CategoryForm(forms.ModelForm):
+
+	class Meta:
+		model = models.Category
+		exclude = ["service"]
+	#end class
+
+	def save(self, commit = True):
+		categry = super(CategoryForm, self).save(commit=False)
+		usuario = CuserMiddleware.get_user()
+		categry.service = models.Service.objects.filter(userservice__user = usuario).first()
+		categry.save()
+		return categry
 	#end def
 
 #end class

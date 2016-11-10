@@ -295,6 +295,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
         $scope.total = 0;
         $scope.subtotal = 0;
         $scope.total_paid = 0;
+        $scope.total_to_pay = 0;
         $scope.checked = false;
         $scope.tip = 0;
         $scope.cc = "";
@@ -308,13 +309,13 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                 $http.get('/ws/itemorders/?order=' + $scope.order_id).success(function(data) {
                   $scope.itemorders = data.object_list;
                   for (var i in $scope.itemorders) {
-                      $scope.subtotal += $scope.itemorders[i].count * $scope.itemorders[i].product__price;
+                      $scope.total += $scope.itemorders[i].count * $scope.itemorders[i].product__price;
                   }
-                  $scope.tip = parseFloat(($scope.subtotal * $scope.conf.propina / 100).toFixed(2));
+                  $scope.tip = parseFloat(($scope.total * $scope.conf.propina / 100).toFixed(2));
 
-                  $scope.iva = new Number($scope.subtotal * $scope.conf.iva / 100);
-                  $scope.ipoconsumo = parseFloat(($scope.subtotal * $scope.conf.ipoconsumo / 100).toFixed(2));
-                  $scope.update_total();
+                  $scope.update_subtotal();
+                  $scope.iva = parseFloat(($scope.total/(1 + $scope.conf.iva)*$scope.conf.iva).toFixed(2));
+                  $scope.ipoconsumo = parseFloat(($scope.total * $scope.conf.ipoconsumo / 100).toFixed(2));
                   if ($scope.order.paid) {
                     console.log($scope.order);
                       $http.get('/ws/bill/' + $scope.order.bill__id + '/?format=json').success(function(data) {
@@ -326,7 +327,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                           $scope.cc = data.cc;
                           $scope.name = data.name;
                           $scope.tel = data.tel;
-                          $scope.update_total();
+                          $scope.update_subtotal();
                           $scope.update_total_paid();
                       });
                   }
@@ -349,9 +350,10 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
         $scope.update_total_paid = function() {
             $scope.total_paid = $scope.cash + $scope.check + $scope.card + $scope.disscounts;
         };
-        $scope.update_total = function() {
-            $scope.total = parseFloat(($scope.subtotal + $scope.iva + $scope.ipoconsumo + $scope.tip).toFixed(2));
+        $scope.update_subtotal = function() {
+            $scope.subtotal = parseFloat(($scope.total/ (1 + $scope.conf.iva)).toFixed(2));
         }
+
         $scope.checkin = function() {
             if ($scope.total_paid == $scope.total) {
                 $scope.checked = true;
@@ -372,27 +374,31 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
         };
         $scope.print_bill = function(success, error) {
             try {
-                var data = {
-                    "data": {
-                        "id": $scope.order.bill + ""
-                    },
-                    "printer": "bill",
-                    "template": "bill",
-                    "service": "bill"
-                };
-                alert($scope.service.printer);
-                $http.post($scope.service.printer, data).success(function() {
-                    success(data);
-                }).error(function(data) {
-                    error(data);
-                });
+                if ($scope.conf.impresora){
+                    var data = {
+                        "data": {
+                            "id": $scope.order.bill + ""
+                        },
+                        "printer": "bill",
+                        "template": "bill",
+                        "service": "bill"
+                    };
+                    alert($scope.service.printer);
+                    $http.post($scope.service.printer, data).success(function() {
+                        success(data);
+                    }).error(function(data) {
+                        error(data);
+                    });
+                }else{
+                    success({});
+                }
             } catch (e) {
                 alert(e);
             }
         };
         $scope.pv_print = function() {
             $scope.print_bill(function(data) {
-                //window.location.reload();
+                window.location.reload();
             }, function(data) {
                 alert("Ocurrió un error al intentar imprimir");
                 window.location.reload();
@@ -471,16 +477,17 @@ controllers.controller('product_list_controller', ['$scope', '$http',
     function($scope, $http) {
         $scope.search = "";
         $scope.load_categorys = function() {
-            $http.get('/categorys/?format=json&search=' + $scope.search)
+            $http.get('/ws/categorys/?format=json&search=' + $scope.search)
                 .success(function(data) {
-                    $scope.categorys = data;
+                    console.log(data);
+                    $scope.categorys = data.object_list;
                 });
         };
         $scope.load_products = function(category_id, category_name) {
             $scope.category_name = category_name;
             $http.get('/ws/products/?format=json&category__id=' + category_id)
                 .success(function(data) {
-                    $scope.products = data;
+                    $scope.products = data.object_list;
                 });
         };
         $scope.load_categorys();
@@ -491,8 +498,8 @@ controllers.controller('category_list_controller', ['$scope', '$http',
     function($scope, $http) {
         $scope.search = "";
         $scope.load_categorys = function() {
-            $http.get('/categorys/?format=json&search=' + $scope.search).success(function(data) {
-                $scope.categorys = data;
+            $http.get('/ws/categorys/?format=json&search=' + $scope.search).success(function(data) {
+                $scope.categorys = data.object_list;
             });
         };
         $scope.load_categorys();
@@ -507,8 +514,8 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
         if ($scope[object_name + '_id']) {
             $scope.title = object_label + " #" + $scope[object_name + '_id'];
             $scope.button = "create";
-            $http.get(url + $scope[object_name + '_id'] + '/').success(function(data) {
-                callback(data);
+            $http.get(url+ "?pk=" + $scope[object_name + '_id'] ).success(function(data) {
+                callback(data.object_list[0]);
             }).error(function(data) {
                 $scope.goTo("dashboard");
             });
@@ -525,7 +532,7 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
             .success(function(data) {
                 $scope[object_name + '_' + index] = {};
                 $scope[object_name + '_' + index].data = {
-                    availableOptions: data,
+                    availableOptions: data.object_list,
                     selectedOption: {}
                 };
                 if (data_callback) {
@@ -558,8 +565,8 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
     $scope.del = function() {
         var ok = confirm("¿Está seguro de borrar el elemento?");
         if (ok) {
-            $http.delete(url + $scope[object_name + '_id'] + '/').success(function(data) {
-                goTo("dashboard");
+            $http.post(url + 'del/' + $scope[object_name + '_id'] + "/").success(function(data) {
+                $scope.goTo("dashboard");
             });
         }
     };
@@ -581,9 +588,9 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
         var send;
         if ($scope[object_name + '_id']) {
             post['id'] = $scope[object_name + '_id'];
-            send = $http.put(url + $scope[object_name + '_id'] + '/', post);
+            send = $http.post(url+ "form/" + $scope[object_name + '_id'] + '/', post);
         } else {
-            send = $http.post(url, post);
+            send = $http.post(url + "form/", post);
         }
 
         send.success(function(data) {
@@ -626,9 +633,9 @@ controllers.controller('category_controller', ['$scope', '$http', '$stateParams'
                 'name': 'value',
                 'image': {
                     'type': 'list',
-                    'url': '/images/?format=json'
+                    'url': '/ws/images/?format=json'
                 }
-            }, '/categorys/', 'Nueva', 'Categoría'
+            }, '/ws/categorys/', 'Nueva', 'Categoría'
         );
     }
 ]);
@@ -641,11 +648,11 @@ controllers.controller('product_controller', ['$scope', '$http', '$stateParams',
                 'price': 'float',
                 'presentation': {
                     'type': 'list',
-                    'url': '/presentation/?format=json'
+                    'url': '/ws/presentation/?format=json'
                 },
                 'category': {
                     'type': 'list',
-                    'url': '/categorys/?format=json'
+                    'url': '/ws/categorys/?format=json'
                 }
             }, '/ws/products/', 'Nuevo', 'Producto'
         );
