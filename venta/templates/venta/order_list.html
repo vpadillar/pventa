@@ -55,13 +55,13 @@
 								<span>[[o.id]]</span>
 							</td>
 							<td>
-								<span>[[o.frienly_date]]</span>
+								<span>[[o.date]]</span>
 							</td>
 							<td>
 								<span>[[o.canceled?"Cancelado":"Completado"]]</span>
 							</td>
 							<td>
-								<span>[[o.products.length]]</span>
+								<span>[[o.products]]</span>
 							</td>
 							<td>
 								<span>$[[o.total]]</span>
@@ -77,8 +77,8 @@
 			</div>
 			<div class="scroll tables">
 				<ul>
-					<li ng-repeat="t in tables" ng-click="goTo('orders_edit', {'order_id':t.order.id})">
-						<span>[[t.table.name]]</span>
+					<li ng-repeat="t in tables" ng-click="goTo('orders_edit', {'order_id':t.order_id})">
+						<span>[[t.name]]</span>
 					</li>
 				</ul>
 			</div>

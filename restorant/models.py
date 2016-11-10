@@ -95,6 +95,7 @@ class ConsumptionDish(models.Model):
 class Table(models.Model):
 	name = models.CharField(max_length=45, verbose_name="Nombre")
 	service = models.ForeignKey(venta.Service, verbose_name="Servicio")
+	aviable = models.BooleanField(default=True)
 	class Meta:
 		verbose_name = "Mesa"
 		verbose_name_plural = "Mesas"
