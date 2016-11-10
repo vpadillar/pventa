@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'supra',
     'informes',
-    'informes2',
+    'reporte',
     'nested_inline',
     'venta',
     'pventa',

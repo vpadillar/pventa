@@ -11,7 +11,7 @@ class Session(object):
 		#if self.check_staff(request.user) and request.path in ('/', ):
 		#	return redirect('/admin/')
 		#end def
-		if request.path in ('/login/', '/auth/login/') or self.check_access(request) or request.path.startswith('/rest/') or request.path.startswith('/ws/'):
+		if request.path in ('/login/', '/auth/login/') or self.check_access(request) or request.path.startswith('/rest/') or request.path.startswith('/ws/') or request.path.startswith('/reporte/'):
 			return None
 		#end if
 		return self.no_access(request.path)

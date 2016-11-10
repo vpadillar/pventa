@@ -159,7 +159,10 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
 			}*/
         };
         $scope.pay = function() {
-
+          if (Object.keys($scope.order).length <= 0){
+            alert("Agrege almenos un producto");
+            return;
+          }
             var post = {
                 'itemorder_set-TOTAL_FORMS': Object.keys($scope.order).length,
                 'itemorder_set-INITIAL_FORMS': $scope.initial,
@@ -314,8 +317,8 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                   $scope.tip = parseFloat(($scope.total * $scope.conf.propina / 100).toFixed(2));
 
                   $scope.update_subtotal();
-                  $scope.iva = parseFloat(($scope.total/(1 + $scope.conf.iva)*$scope.conf.iva).toFixed(2));
-                  $scope.ipoconsumo = parseFloat(($scope.total * $scope.conf.ipoconsumo / 100).toFixed(2));
+                  $scope.iva = parseFloat(($scope.subtotal*$scope.conf.iva).toFixed(2));
+                  $scope.ipoconsumo = parseFloat(($scope.subtotal *($scope.conf.ipoconsumo)).toFixed(2));
                   if ($scope.order.paid) {
                     console.log($scope.order);
                       $http.get('/ws/bill/' + $scope.order.bill__id + '/?format=json').success(function(data) {
@@ -351,7 +354,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
             $scope.total_paid = $scope.cash + $scope.check + $scope.card + $scope.disscounts;
         };
         $scope.update_subtotal = function() {
-            $scope.subtotal = parseFloat(($scope.total/ (1 + $scope.conf.iva)).toFixed(2));
+            $scope.subtotal = parseFloat(($scope.total/ (1 + $scope.conf.iva + $scope.conf.ipoconsumo)).toFixed(2));
         }
 
         $scope.checkin = function() {
@@ -383,7 +386,6 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
                         "template": "bill",
                         "service": "bill"
                     };
-                    alert($scope.service.printer);
                     $http.post($scope.service.printer, data).success(function() {
                         success(data);
                     }).error(function(data) {
