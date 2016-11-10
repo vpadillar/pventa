@@ -6,7 +6,7 @@
 			<span color="text-primary">Órdenes</span>
 		</li>
 		{% endif %}
-		{% if groups.0.name  == 'cajero' or groups.01name  == 'cajero' %}
+		{% if groups.0.name  == 'cajero' or groups.1.name  == 'cajero' %}
 		<li ng-click="goTo('pay')">
 			<div class="img orders"></div>
 			<span color="text-primary">Pagar</span>

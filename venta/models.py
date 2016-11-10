@@ -8,11 +8,30 @@ from datetime import datetime
 from django.utils import timezone
 from django.db.models import Count, Sum
 
+
+class Config(models.Model):
+	name = models.CharField(max_length=45)
+	ipoconsumo = models.FloatField(default=0)
+	iva = models.FloatField(default=0)
+	propina = models.FloatField(default=0)
+	impresora = models.BooleanField(default=True)
+
+	class Meta:
+		verbose_name = "Configuracion"
+		verbose_name_plural = "Tu configuracion"
+	#end class
+
+	def __unicode__(self):
+		return self.name
+	#end def
+#end class
+
 class Service(models.Model):
 	name = models.CharField(max_length=45, unique=True, verbose_name="Nombre")
 	code = models.CharField(max_length=45, unique=True, db_index=True, verbose_name="Codigo")
 	printer = models.CharField(max_length=100)
 	moviles = models.TextField()
+	configuracion = models.ForeignKey(Config)
 
 
 	class Meta:
@@ -263,24 +282,10 @@ class Bill(models.Model):
 	#end def
 #end class
 
-class ItemOrder(models.Model):
-	product = models.ForeignKey(Product, verbose_name="Producto")
-	count = models.IntegerField(verbose_name="Cantidad")
-
-	class Meta:
-		verbose_name = "Item de Orden"
-		verbose_name_plural = "Items de Orden"
-	#end class
-
-	def __unicode__(self):
-		return "%s x%s" % (str(self.product), str(self.count))
-	#end def
-#end class
 
 class Order(models.Model):
 	service = models.ForeignKey(Service, verbose_name="Servicio")
 	client = models.ForeignKey(Client, null=True, blank=True, verbose_name="Cliente")
-	products = models.ManyToManyField(ItemOrder, verbose_name="Productos")
 	date = models.DateTimeField(auto_now_add=True, verbose_name="Fecha")
 	bill = models.OneToOneField(Bill, null=True, blank=True, verbose_name="Factura")
 	canceled = models.BooleanField(default=False, verbose_name="Cancelado")
@@ -316,17 +321,19 @@ class Order(models.Model):
 	#end def
 #end class
 
-class Config(models.Model):
-	ipoconsumo = models.FloatField(default=0)
-	iva = models.FloatField(default=0)
-	propina = models.FloatField(default=0)
+
+class ItemOrder(models.Model):
+	order = models.ForeignKey(Order)
+	product = models.ForeignKey(Product, verbose_name="Producto")
+	count = models.IntegerField(verbose_name="Cantidad")
+
 	class Meta:
-		verbose_name = "Configuracion"
-		verbose_name_plural = "Tu configuracion"
+		verbose_name = "Item de Orden"
+		verbose_name_plural = "Items de Orden"
 	#end class
 
 	def __unicode__(self):
-		return "configuracion"
+		return "%s x%s" % (str(self.product), str(self.count))
 	#end def
 #end class
 
@@ -347,7 +354,6 @@ class ProductRequest(models.Model):
 		return "%s %s" % (str(self.date.strftime("%d/%m/%Y")), message)
 	#end def
 #end class
-
 
 class ItemRequest(models.Model):
 	productrequest = models.ForeignKey(ProductRequest, verbose_name="Petición de producto")
