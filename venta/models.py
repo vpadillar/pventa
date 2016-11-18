@@ -319,6 +319,18 @@ class Order(models.Model):
 		#end if
 		return "%s%s-%s-%s" % (cero, str(self.date.day), (months[self.date.month]), str(self.date.year))
 	#end def
+
+	def save(self):
+		obj = super(Order, self).save()
+		items = ItemOrder.objects.filter(order=self)
+		print items
+		for item in items:
+			if hasattr(item.product, 'dish'):
+				item.product.dish.consume(self, item.count)
+			# end if
+		# end for
+		return obj
+	# end def
 #end class
 
 

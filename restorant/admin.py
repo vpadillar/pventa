@@ -74,7 +74,22 @@ class ConsumptionAdmin(admin.ModelAdmin):
 	#end def
 #end class
 
+class ConsuptionInline(admin.TabularInline):
+	model = models.Consumption
+	extra = 0
+	readonly_fields = ['product', 'consumption', 'order', 'date', 'canceled']
+
+	def has_add_permission(self, obj):
+		return False
+	#end def
+
+	def has_delete_permission(self, *obj):
+		return False
+	#end def
+# end class
+
 class BuySupplyAdmin(admin.ModelAdmin):
+	inlines = [ConsuptionInline]
 	model = models.BuySupply
 	readonly_fields = ('current_count',)
 	def save_model(self, request, obj, form, change):

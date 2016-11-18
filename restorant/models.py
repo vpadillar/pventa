@@ -46,7 +46,7 @@ class BuySupply(models.Model):
 	#end def
 
 	def __unicode__(self):
-		return u"%s" % self.code
+		return u"%s" % str(self.supply)
 	#end def
 #end class
 
@@ -62,6 +62,13 @@ class Consumption(models.Model):
 		verbose_name = "Consumo"
 		verbose_name_plural = "Consumos"
 	#end def
+
+	def save(self):
+		obj = super(Consumption, self).save()
+		self.supply.current_count = self.supply.current_count - self.consumption
+		self.supply.save()
+		return obj
+	# end def
 
 #end class
 
@@ -80,6 +87,19 @@ class Dish(venta.Product):
 		verbose_name = "Plato"
 		verbose_name_plural = "Platos"
 	#end def
+
+	def consume(self, order, count):
+		cds = ConsumptionDish.objects.filter(dish=self)
+		for cd in cds:
+			bysupply = BuySupply.objects.filter(supply=cd.supply, current_count__gt = 0).order_by('date')
+			if cd.supply.method:#PEPS
+				bysupply = bysupply.first()
+			else:#UEPS
+				bysupply = bysupply.last()
+			#edn if
+			Consumption(product=self, supply=bysupply, consumption=cd.consumption*count, order=order).save()
+		# end for
+	# end def
 
 	def __unicode__(self):
 		return u"%s" % (self.name, )
