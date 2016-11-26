@@ -1,0 +1,307 @@
+{% extends 'admin/base_site.html' %}
+{% load fullcalendar_tags i18n %}
+{% block extrahead %}
+
+
+	<link rel='stylesheet' href='http://fullcalendar.io/js/fullcalendar-2.9.0/lib/cupertino/jquery-ui.min.css' />
+	<link href='http://fullcalendar.io/js/fullcalendar-2.9.0/fullcalendar.css' rel='stylesheet' />
+	<link href='http://fullcalendar.io/js/fullcalendar-2.9.0/fullcalendar.print.css' rel='stylesheet' media='print' />
+	<script src='http://fullcalendar.io/js/fullcalendar-2.9.0/lib/moment.min.js'></script>
+	<script src='http://fullcalendar.io/js/fullcalendar-2.9.0/lib/jquery.min.js'></script>
+	<script src='http://fullcalendar.io/js/fullcalendar-2.9.0/fullcalendar.min.js'></script>
+	<script src='http://fullcalendar.io/js/fullcalendar-2.9.0/lang-all.js'></script>
+
+	<style type="text/css">
+		@import url(/static/admin/css/material-inputs/select.css);
+		#calendar{
+			width: 80%;
+			margin: 30px auto;
+
+		}
+		#calendar .fc-content table{
+			height: 600px;
+		}
+		.fc-event{
+			cursor: pointer;
+		}
+		.offset {
+		    background-image: linear-gradient(left, transparent 300px,rgba(39,39,39,.5) 300px, rgba(39,39,39,.5) 100%);
+		    width: 100%;
+		    height: 500px;
+		}
+		#nueva {
+			margin: 0px;
+			float: right;
+			margin-top: -7px;
+		}
+		.group{
+			float: left;
+		}
+
+	</style>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				function filterSelet(context){
+					$(context+' input[type="text"]').keyup(function(){
+				        var val = $(this).val();
+				        $(context+' ul > li').each(function(){
+							var rg = new RegExp(val , 'i')
+							$(this).toggle(rg.test($(this).text()));
+				        });
+				    });
+				}
+				filterSelet('#ps');
+				filterSelet('#cl');
+				filterSelet('#psn');
+
+				$('#tp input[type="text"]').change(function() {
+					console.log('ok');
+					var val = $(this).val();
+					switch (val) {
+						case 'Todos':
+							$('#ta input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#ps input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#cl input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#psn input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							break;
+						case 'Actividad':
+							$('#ta input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#ps input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#cl input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#psn input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							break;
+						case 'Seguimiento':
+							$('#ta input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							$('#ps input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							$('#cl input[type="text"]').prop('disabled', false).prop('placeholder', 'Seleccione una opción').addClass('valid');
+							$('#psn input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							break;
+						case 'Cumpleaños':
+							$('#ta input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							$('#ps input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							$('#cl input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							$('#psn input[type="text"]').prop('disabled', true).val('').removeAttr('placeholder').removeClass('valid');
+							break;
+						default:
+
+					}
+				});
+
+				$(".group input[type=text]").click(function(){
+					$(this).addClass("open");
+				});
+				$(".group li").click(function(event){
+					event.stopPropagation();
+					var val = $(this).find("label").html();
+					var input = $(this).parents(".group").find("input[type=text]");
+					input.removeClass("open");
+					input.val(val).trigger('change');
+				});
+				$(".group input[type=radio][checked]").each(function(){
+					var val = $('label[for="' + this.id + '"]').html();
+					var input = $(this).parents(".group").find("input[type=text]");
+					input.val(val);
+				});
+				$(window).click(function (event){
+					if(!$(event.target).closest('.group input[type=text]').length &&
+				       !$(event.target).is('.group input[type=text]')) {
+				        if($('.group input[type=text]').is(":visible")) {
+				            $('.group input[type=text]').removeClass("open");
+				        }
+				    }
+				});
+			});
+		</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo;
+<a href="{% url 'admin:app_list' app_label='actividades' %}">Actividades</a>
+&rsaquo;
+Calendario de actividades
+</div>
+{% endblock %}
+
+{% block content %}
+
+		<h1 class="head">
+			Calendario de actividsades
+			<a id="nueva" class="exbtn" href="/dashboard/actividades/actividad/add">Nueva actividad</a>
+		</h1>
+		<form method="get">
+			<section>
+				<div id="tp" class="group">
+					<input readonly class="valid" placeholder="Seleccione una opción" value="Todos" type="text" autocomplete="off">
+					<label>Tipo de novedad:</label>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<i class="micon">arrow_drop_down</i>
+					<ul>
+						<li>
+							<label for="todos_novedad_selected">Todos</label>
+							<input{% if data.novedad_select.0 == '0' %} checked{% endif %} id="todos_novedad_selected" type="radio" name="novedad_select" value="0">
+						</li>
+						<li>
+							<label for="novedad_selected1">Actividad</label>
+							<input{% if data.novedad_select.0 == '1' %} checked{% endif %} type="radio" id="novedad_selected1" name="novedad_select" value="1">
+						</li>
+						<li>
+							<label for="novedad_selected2">Procedimiento de Cartera</label>
+							<input{% if data.novedad_select.0 == '2' %} checked{% endif %} type="radio" id="novedad_selected2" name="novedad_select" value="2">
+						</li>
+						<li>
+							<label for="novedad_selected3">Cumpleaños</label>
+							<input{% if data.novedad_select.0 == '3' %} checked{% endif %} type="radio" id="novedad_selected3" name="novedad_select" value="3">
+						</li>
+					<ul>
+				</div>
+				<div id="ta" class="group">
+					<input readonly class="valid" placeholder="Seleccione una opción" type="text" autocomplete="off">
+					<label>Tipo de actividad:</label>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<i class="micon">arrow_drop_down</i>
+					<ul>
+						<li>
+							<label for="todos_tipo_selected">Todos</label>
+							<input{% if data.tipo_selected.0 == '0' %} checked{% endif %} id="todos_tipo_selected" type="radio" name="tipo_selected" value="0">
+						</li>
+						{%for tipo in tipos%}
+						<li>
+							<span class="color" style="background-color:{{tipo.color}}"></span>
+							<label for="id{{tipo.nombre}}">{{tipo.nombre}}</label>
+							<input{% if data.tipo_selected.0 == tipo.pk|stringformat:'i' %} checked{% endif %} value="{{tipo.pk}}" type="radio" name="tipo_selected" id="id{{tipo.nombre}}"/>
+						</li>
+						{% endfor %}
+					<ul>
+				</div>
+				<div id="ps" class="group">
+					<input class="valid" placeholder="Seleccione una opción" type="text" autocomplete="off">
+					<label>Piscina:</label>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<i class="micon">arrow_drop_down</i>
+					<input{% if data.piscina.0 == '0' %} checked{% endif %} id="todos_piscina" type="radio" name="piscina" value="0">
+					<ul>
+						<li>
+							<label for="todos_tipo_selected">Todos</label>
+							<input{% if data.tipo_selected.0 == '0' %} checked{% endif %} id="todos_tipo_selected" type="radio" name="tipo_selected" value="0">
+						</li>
+						{%for piscina in piscinas%}
+						<li>
+							<!-- <span class="color" style="background-color:{{tipo.color}}"></span> -->
+							<label for="id{{piscina.nombre}}">{{piscina.nombre}}</label>
+							<input{% if data.piscina.0 == piscina.pk|stringformat:'i' %} checked{% endif %} value="{{piscina.pk}}" type="radio" name="piscina" id="id{{piscina.nombre}}"/>
+						</li>
+						{% endfor %}
+					<ul>
+				</div>
+				<div id="psn" class="group">
+					<input class="valid" placeholder="Seleccione una opción" type="text" autocomplete="off">
+					<label>Piscinero:</label>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<i class="micon">arrow_drop_down</i>
+					<input{% if data.piscinero.0 == '0' %} checked{% endif %} id="todos_piscinero" type="radio" name="piscinero" value="0">
+					<ul>
+						<li>
+							<label for="todos_tipo_selected">Todos</label>
+							<input{% if data.tipo_selected.0 == '0' %} checked{% endif %} id="todos_tipo_selected" type="radio" name="tipo_selected" value="0">
+						</li>
+						{%for piscinero in piscineros%}
+						<li>
+							<!-- <span class="color" style="background-color:{{tipo.color}}"></span> -->
+							<label for="id{{piscinero.pk}}">{{piscinero.first_name}} {{piscinero.last_name}}</label>
+							<input{% if data.piscinero.0 == piscinero.pk|stringformat:'i' %} checked{% endif %} value="{{piscinero.pk}}" type="radio" name="piscinero" id="id{{piscinero.pk}}"/>
+						</li>
+						{% endfor %}
+					<ul>
+				</div>
+				<div id="cl" class="group">
+					<input class="valid" placeholder="Seleccione una opción" type="text" autocomplete="off">
+					<label>Cliente:</label>
+					<span class="highlight"></span>
+					<span class="bar"></span>
+					<i class="micon">arrow_drop_down</i>
+					<input{% if data.cliente.0 == '0' %} checked{% endif %} id="todos_cliente" type="radio" name="cliente" value="0">
+					<ul>
+						<li>
+							<label for="todos_tipo_selected">Todos</label>
+							<input{% if data.tipo_selected.0 == '0' %} checked{% endif %} id="todos_tipo_selected" type="radio" name="tipo_selected" value="0">
+						</li>
+						{%for cliente in clientes%}
+						<li>
+							<!-- <span class="color" style="background-color:{{tipo.color}}"></span> -->
+							<label for="id{{cliente.username}}">{{cliente.username}}</label>
+							<input{% if data.cliente.0 == cliente.pk|stringformat:'i' %} checked{% endif %} value="{{cliente.pk}}" type="radio" name="cliente" id="id{{cliente.username}}"/>
+						</li>
+						{% endfor %}
+					<ul>
+
+				</div>
+				<div class="group">
+					<button>Buscar</button>
+				</div>
+				<div class="submit-row footer">
+					<br>
+				</div>
+			</section>
+		</form>
+
+		<script type="text/javascript">
+			var configure_calendar = {
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'month,agendaWeek,agendaDay'
+				},
+
+                lang: 'es',
+				dayClick: function(date, jsEvent, view) {
+					$('#calendar').fullCalendar( 'gotoDate', date);
+					$('#calendar').fullCalendar('changeView', 'agendaDay');
+				},
+
+				eventClick: function(calEvent, jsEvent, view) {
+					var href;
+					if (calEvent.type == 'Actividad'){
+						href = "/dashboard/actividades/actividad/" + calEvent.pk + "/change/";
+					}else
+					if (calEvent.type == 'Seguimiento'){
+						href = "/dashboard/gestion_cartera/seguimiento/" + calEvent.pk + "/change/";
+					}else
+					if (calEvent.type == 'InicioSeguimiento'){
+						href = "/dashboard/gestion_cartera/inicioseguimiento/" + calEvent.pk + "/change/";
+					}
+
+					var mwindow = window.open(calEvent.urli+"?_popup=1", calEvent.type, "width=800,height=900");
+
+				}
+			};
+			$("#nueva").click(function(){
+				var href = $(this).attr("href");
+				var pwindow = window.open(href+"?_popup=1", "Nueva actividad", "width=800,height=900");
+
+				return false;
+			});
+			$.fullCalendar.lang('es', {
+                // strings we need that are neither in Moment nor datepicker
+                "day": "Jour",
+                "week": "Semaine",
+                "month": "Mois",
+                "list": "Mon planning"
+            });
+           	function dismissAddRelatedObjectPopup(win) {
+				win.close();
+				$('#calendar').fullCalendar( 'refetchEvents' );
+			}
+           	function dismissChangeRelatedObjectPopup(win) {
+				win.close();
+				$('#calendar').fullCalendar( 'refetchEvents' );
+			}
+		</script>
+		{% calendar "/notificaciones/calendar/" data %}
+
+{% endblock %}

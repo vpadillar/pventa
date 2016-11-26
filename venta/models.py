@@ -33,7 +33,6 @@ class Service(models.Model):
 	moviles = models.TextField()
 	configuracion = models.ForeignKey(Config)
 
-
 	class Meta:
 		verbose_name = "Servicio"
 		verbose_name_plural = "Servicios"
@@ -380,4 +379,19 @@ class ItemRequest(models.Model):
 	def __unicode__(self):
 		return "%s x%s" % (str(self.product), str(self.count))
 	#end def
+#end class
+
+class Cashier(User):
+
+	service = models.ForeignKey(Service, verbose_name="Servicio")
+
+	class Meta:
+		verbose_name = "Cajero"
+		verbose_name_plural = "Cajeros"
+	#end class
+
+	def __unicode__(self):
+		return self.name
+	#end def
+
 #end class

@@ -2,6 +2,8 @@ from django import forms
 from cuser.middleware import CuserMiddleware
 import models
 from restorant.models import Table
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import Group
 
 class SellCreateForm(forms.ModelForm):
 	class Meta:
@@ -37,6 +39,7 @@ class CellarForm(forms.ModelForm):
 		bodega = super(CellarForm, self).save(commit)
 		usuario = CuserMiddleware.get_user()
 		bodega.service = models.Service.objects.filter(userservice__user = usuario).first()
+		bodega.save()
 		return bodega
 	#end def
 
@@ -113,5 +116,22 @@ class ItemOrderForm(forms.ModelForm):
 		exclude = []
 		model = models.ItemOrder
 	# end class
-
 # end class
+
+class CashierForm(UserCreationForm):
+
+	class Meta:
+		fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name']
+		model = models.Cashier
+	#end class
+
+	def save(self, commit = True):
+		cashier = super(CashierForm, self).save(commit=False)
+		user = CuserMiddleware.get_user()
+		cashier.service = models.Service.objects.filter(userservice__user = user).first()
+		cashier.save()
+		groupCashier, created = Group.objects.get_or_create(name = "cashier")
+		cashier.groups.add(groupCashier)
+		return cashier
+	#end def
+#end class

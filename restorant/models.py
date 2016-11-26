@@ -9,6 +9,7 @@ class Supply(models.Model):
 		(True, 'PEPS'),
 		(False, 'UEPS')
 	)
+	service = models.ForeignKey(venta.Service, verbose_name="Servicio")
 	name = models.CharField(max_length=45, verbose_name="Nombre")
 	stock = models.FloatField(null=True, blank=True)
 	minimun_stock = models.FloatField(verbose_name="stock mínimo", null=True, blank=True)
@@ -34,12 +35,28 @@ class Supply(models.Model):
 	#end def
 #end class
 
-class BuySupply(models.Model):
+class BillBuySupply(models.Model):
+	date = models.DateTimeField(auto_now_add = True)
 	code = models.CharField(max_length=45, verbose_name="Codigo")
+
+	class Meta:
+		verbose_name = "Factura de Compra"
+		verbose_name_plural = "Facturas de Compras"
+	#end def
+
+	def __unicode__(self):
+		return u"%s" % str(self.code)
+	#end def
+
+#end class
+
+class BuySupply(models.Model):
+	bill = models.ForeignKey(BillBuySupply,verbose_name="codigo Factura")
 	supply = models.ForeignKey(Supply, verbose_name="Suministro")
 	buy_count = models.IntegerField(verbose_name="Cantidad")
 	current_count = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Cantidad Actual")
 	date = models.DateTimeField(auto_now_add = True)
+
 	class Meta:
 		verbose_name = "Compra de Suministro"
 		verbose_name_plural = "Compra de Suministros"
@@ -49,6 +66,7 @@ class BuySupply(models.Model):
 		return u"%s" % str(self.supply)
 	#end def
 #end class
+
 
 class Consumption(models.Model):
 	product = models.ForeignKey(venta.Product, verbose_name="producto")
@@ -156,6 +174,7 @@ class SetTable(models.Model):
 
 class SupplyRequest(models.Model):
 	date = models.DateTimeField(auto_now_add = True)
+	service = models.ForeignKey(venta.Service, verbose_name="Servicio")
 	class Meta:
 		verbose_name = "Pedido de Suministro"
 		verbose_name_plural = "Pedidos de Suministros"

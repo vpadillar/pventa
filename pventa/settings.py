@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'restorant',
     'corsheaders',
     'import_export',
+    #'notificaciones',
 
 ]
 MIDDLEWARE_CLASSES = [
