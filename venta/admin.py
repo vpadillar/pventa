@@ -301,6 +301,13 @@ class ItemRequestInline(admin.StackedInline):
 class ProductRequestAdmin(admin.ModelAdmin):
 	model = models.ProductRequest
 	inlines = [ItemRequestInline]
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(ProductRequestAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
 #end class
 
 class ServiceAdmin(admin.ModelAdmin):
@@ -310,7 +317,6 @@ class ServiceAdmin(admin.ModelAdmin):
 
 class CashierAdmin(admin.ModelAdmin):
 	model = models.Cashier 
-
 	form = CashierForm
 
 	def get_queryset(self, request):
@@ -319,12 +325,22 @@ class CashierAdmin(admin.ModelAdmin):
 		queryset = queryset.filter(service__userservice__user = user)
 		return queryset
 	#end def
+#end class
 
+class BuyPresentationAdmin(admin.ModelAdmin):
+	model = models.BuyPresentation
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(BuyPresentationAdmin, self).get_queryset(request)
+		queryset = queryset.filter(provider__service__userservice__user = user)
+		return queryset
+	#end def
 #end class
 
 admin_site.register(models.ProductRequest, ProductRequestAdmin)
 admin_site.register(models.Cellar, CellarAdmin)
-admin_site.register(models.BuyPresentation)
+admin_site.register(models.BuyPresentation, BuyPresentationAdmin)
 admin_site.register(models.Provider, ProviderAdmin)
 admin_site.register(models.BuyPoduct, BuyProductAdmin)
 admin_site.register(models.Sell, SellAdmin)

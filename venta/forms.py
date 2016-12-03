@@ -118,6 +118,23 @@ class ItemOrderForm(forms.ModelForm):
 	# end class
 # end class
 
+class ProductRequestForm(forms.ModelForm):
+
+	class Meta:
+		exclude = ["service"]
+		model = models.ProductRequest
+	#end class
+
+	def save(self, commit = True):
+		pedido = super(ProductRequestForm, self).save(commit=False)
+		usuario = CuserMiddleware.get_user()
+		pedido.service = models.Service.objects.filter(userservice__user = usuario).first()
+		pedido.waiter = usuario
+		pedido.save()
+		return pedido
+	#end def
+#end class
+
 class CashierForm(UserCreationForm):
 
 	class Meta:

@@ -349,6 +349,7 @@ class ItemOrder(models.Model):
 #end class
 
 class ProductRequest(models.Model):
+	service = models.ForeignKey(Service, verbose_name="Servicio")
 	date = models.DateTimeField(auto_now_add = True)
 	class Meta:
 		verbose_name = "Pedido de producto"

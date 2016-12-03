@@ -76,9 +76,9 @@ class SupplyAdmin(admin.ModelAdmin):
 #end class
 
 class ConsumptionAdmin(admin.ModelAdmin):
-	models = models.Supply
+	models = models.Consumption
 	list_display = ['supply', 'consumo', 'product', 'date', 'canceled']
-	search_fields = ['supply', 'consumption', 'product']
+	search_fields = ['supply__supply__name', 'consumption', 'product__name']
 	list_filter = ['date', 'canceled', 'product']
 	readonly_fields = ['product', 'supply', 'consumption', 'date', 'order']
 
@@ -92,6 +92,13 @@ class ConsumptionAdmin(admin.ModelAdmin):
 
 	def has_delete_permission(self, *obj):
 		return False
+	#end def
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(ConsumptionAdmin, self).get_queryset(request)
+		queryset = queryset.filter(supply__supply__service__userservice__user = user)
+		return queryset
 	#end def
 #end class
 
@@ -112,13 +119,23 @@ class ConsuptionInline(admin.TabularInline):
 class BuySupplyAdmin(admin.ModelAdmin):
 	inlines = [ConsuptionInline]
 	model = models.BuySupply
+	list_display = ['supply', 'buy_count', 'date']
+	search_fields = ['supply', 'buy_count']	
 	readonly_fields = ('current_count',)
+
 	def save_model(self, request, obj, form, change):
 		if not change:
 			obj.current_count = obj.buy_count
 			obj.save()
 		#end if
 		super(BuySupplyAdmin, self).save_model(request, obj, form, change)
+	#end def
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(BuySupplyAdmin, self).get_queryset(request)
+		queryset = queryset.filter(supply__service__userservice__user = user)
+		return queryset
 	#end def
 #end class
 
@@ -146,11 +163,24 @@ class BillBuySupplyAdmin(admin.ModelAdmin):
 	model = models.BillBuySupply
 #end class
 
+class SetTableAdmin(admin.ModelAdmin):
+	model = models.SetTable
+	list_display = ['table', 'order']
+	search_fields = ['table', 'order']
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(SetTableAdmin, self).get_queryset(request)
+		queryset = queryset.filter(table__service__userservice__user = user)
+		return queryset
+	#end def
+#end class
+
 admin_site.register(models.SupplyRequest, SupplyRequestAdmin)
 admin_site.register(models.BuySupply, BuySupplyAdmin)
 admin_site.register(models.Dish, DishAdmin)
 admin_site.register(models.Table, TableAdmin)
 admin_site.register(models.Supply, SupplyAdmin)
 admin_site.register(models.Consumption, ConsumptionAdmin)
-admin_site.register(models.SetTable)
+admin_site.register(models.SetTable, SetTableAdmin)
 admin_site.register(models.BillBuySupply, BillBuySupplyAdmin)
