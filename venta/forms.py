@@ -152,3 +152,22 @@ class CashierForm(UserCreationForm):
 		return cashier
 	#end def
 #end class
+
+class WaiterForm(UserCreationForm):
+	
+	class Meta:
+		fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name']
+		model = models.Waiter
+	#end class
+
+	def save(self, commit = True):
+		waiter = super(WaiterForm, self).save(commit=False)
+		user = CuserMiddleware.get_user()
+		waiter.service = models.Service.objects.filter(userservice__user = user).first()
+		waiter.save()
+		groupWaiter, created = Group.objects.get_or_create(name = "waiter")
+		waiter.groups.add(groupWaiter)
+		return waiter
+	#end def
+
+#end class

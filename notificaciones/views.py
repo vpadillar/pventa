@@ -13,9 +13,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from actividades import models as actividades
 from gestion_cartera import models as gestion_cartera
-from reportes import models as reportes
-from usuarios import models as usuarios
-from usuarios.decorator import check_login
 from django.contrib.auth.decorators import login_required
 
 import croniter

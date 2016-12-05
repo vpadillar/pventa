@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 import models
 from django.db.models import Count, Sum
-from forms import ProductoForm, CellarForm, ProviderForm, CashierForm
+from forms import ProductoForm, CellarForm, ProviderForm, CashierForm, WaiterForm, ProductRequestForm
 
 class BuyProductStacked(NestedStackedInline):
 	model = models.BuyPoduct
@@ -301,6 +301,7 @@ class ItemRequestInline(admin.StackedInline):
 class ProductRequestAdmin(admin.ModelAdmin):
 	model = models.ProductRequest
 	inlines = [ItemRequestInline]
+	form = ProductRequestForm
 
 	def get_queryset(self, request):
 		user = CuserMiddleware.get_user()
@@ -325,6 +326,19 @@ class CashierAdmin(admin.ModelAdmin):
 		queryset = queryset.filter(service__userservice__user = user)
 		return queryset
 	#end def
+#end class
+
+class WaiterAdmin(admin.ModelAdmin):
+	model = models.Waiter
+	form = WaiterForm
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(CashierAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
 #end class
 
 class BuyPresentationAdmin(admin.ModelAdmin):

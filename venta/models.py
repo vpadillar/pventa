@@ -290,7 +290,7 @@ class Order(models.Model):
 	canceled = models.BooleanField(default=False, verbose_name="Cancelado")
 	paid = models.BooleanField(default=False, verbose_name="Pagado")
 	casher = models.ForeignKey(User, verbose_name="Cajero", related_name="casher", null=True, blank=True)
-	waiter = models.ForeignKey(User, verbose_name="Mesero", related_name="waiter")
+	waiter = models.ForeignKey(User, verbose_name="Mesero", related_name="waitier")
 
 	class Meta:
 		verbose_name = "Orden"
@@ -383,7 +383,6 @@ class ItemRequest(models.Model):
 #end class
 
 class Cashier(User):
-
 	service = models.ForeignKey(Service, verbose_name="Servicio")
 
 	class Meta:
@@ -394,5 +393,18 @@ class Cashier(User):
 	def __unicode__(self):
 		return self.name
 	#end def
+#end 
 
+class Waiter(User):
+	service = models.ForeignKey(Service, verbose_name="Servicio")
+
+	class Meta:
+		verbose_name = "Mesero"
+		verbose_name_plural = "Meseros"
+	#end class
+
+	def __unicode__(self):
+		return self.name
+	#end def
+		
 #end class
