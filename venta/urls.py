@@ -1,6 +1,6 @@
 
 from django.conf.urls import url, include
-import views 
+import views
 
 urlpatterns = [
     url(r'^$', views.PvTemplateView.as_view(template_name="venta/index.html")),
@@ -18,4 +18,27 @@ urlpatterns = [
     url(r'^product_list.html', views.PvTemplateView.as_view(template_name="venta/product_list.html")),
     url(r'^product_add.html', views.PvTemplateView.as_view(template_name="venta/product_add.html")),
     url(r'^login/', views.PvTemplateView.as_view(template_name="venta/login.html")),
+    #supra
+    url(r'^ws/bill/(?P<pk>\d+)/$', views.BillDetailView.as_view()),
+    url(r'^ws/form/bill/$', views.BillFormView.as_view()),
+    url(r'^ws/groups/$', views.GroupListView.as_view()),
+    url(r'^ws/clients/$', views.ClientListView.as_view()),
+    url(r'^ws/categorys/form/$', views.CategoryFormView.as_view()),
+    url(r'^ws/categorys/form/(?P<pk>\d+)/$', views.CategoryFormView.as_view()),
+    url(r'^ws/categorys/del/(?P<pk>\d+)/$', views.CategoryDeleteView.as_view()),
+    url(r'^ws/categorys/$', views.CategoyListView.as_view()),
+    url(r'^ws/images/$', views.ImageListView.as_view()),
+    url(r'^ws/orders/$', views.OrderListView.as_view()),
+    url(r'^ws/itemorders/$', views.ItemOrderListView.as_view()),
+    url(r'^ws/order/(?P<pk>\d+)/$', views.OrderDetailView.as_view()),
+    url(r'^ws/del/order/(?P<pk>\d+)/$', views.OrderDeleteView.as_view()),
+    url(r'^ws/form/orders/$', views.OrderFormView.as_view()),
+    url(r'^ws/form/orders/(?P<pk>\d+)/$', views.OrderFormView.as_view()),
+    url(r'^ws/products/$', views.ProductListView.as_view()),
+    url(r'^ws/presentation/$', views.PresentationListView.as_view()),
+    url(r'^ws/login/$', views.Login.as_view()),
+    url(r'^ws/products/form/$', views.ProductFormView.as_view()),
+    url(r'^ws/products/form/(?P<pk>\d+)/$', views.ProductFormView.as_view()),
+    url(r'^ws/products/del/(?P<pk>\d+)/$', views.ProductDeleteView.as_view()),
+    url(r'^ws/login/impresora/$', views.LoginImpresora.as_view()),
 ]

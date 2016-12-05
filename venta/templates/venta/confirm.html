@@ -3,15 +3,15 @@
 		<section class="voucher">
 			<div class="scrollv">
 				<table>
-					<tr ng-repeat="p in order.products">
+					<tr ng-repeat="p in itemorders">
 						<td>
-							<span>[[p.product_obj.name]]</span>
+							<span>[[p.product__name]]</span>
 						</td>
 						<td>
 							<span> x [[p.count]]</span>
 						</td>
 						<td>
-							<span>$[[p.count*p.product_obj.price]]</span>
+							<span>$[[p.count*p.product__price]]</span>
 						</td>
 					</tr>
 				</table>
@@ -54,7 +54,7 @@
 						<span>Total:</span>
 					</td>
 					<td>
-						<span>$[[total]]</span>
+						<span>$[[total + tip]]</span>
 					</td>
 				</tr>
 			</table>
@@ -108,11 +108,15 @@
 					EDITAR ORDEN
 					<i class="material-icons">create</i>
 				</a-->
-				<a ng-show="!order.paid" class="button" color="text" background="[[!checked?'secondary-text':'accent']]" ng-click="save();">
+				<a ng-show="!order.paid&&!conf.impresora" class="button" color="text" background="[[!checked?'secondary-text':'accent']]" ng-click="save();">
+					GUARDAR
+					<i class="material-icons">print</i>
+				</a>
+				<a ng-show="!order.paid&&conf.impresora" class="button" color="text" background="[[!checked?'secondary-text':'accent']]" ng-click="save();">
 					GUARDAR E IMPRIMIR
 					<i class="material-icons">print</i>
 				</a>
-				<a ng-show="order.paid" class="button" color="text" background="accent" ng-click="pv_print();">
+				<a ng-show="order.paid&&conf.impresora" class="button" color="text" background="accent" ng-click="pv_print();">
 					IMPRIMIR
 					<i class="material-icons">print</i>
 				</a>

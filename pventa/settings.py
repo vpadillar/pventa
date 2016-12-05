@@ -45,15 +45,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'supra',
     'informes',
-    'informes2',
+    'reporte',
     'nested_inline',
     'venta',
     'pventa',
     'restorant',
-    'rest_framework',
     'corsheaders',
     'import_export',
+    #'notificaciones',
 
 ]
 MIDDLEWARE_CLASSES = [
@@ -141,13 +142,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-la'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
