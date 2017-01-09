@@ -34,7 +34,6 @@ class BCategoriaAdmin(admin.ModelAdmin):
 #end class
 
 
-admin_site.register(models.Oferta)
 admin_site.register(models.PProducto, PProductoAdmin)
 admin_site.register(models.PMarca, PMarcaAdmin)
 admin_site.register(models.PCategoria)
