@@ -35,11 +35,9 @@ class BCategoriaAdmin(admin.ModelAdmin):
 
 
 admin_site.register(models.Oferta)
-admin_site.register(models.Promocion)
 admin_site.register(models.PProducto, PProductoAdmin)
 admin_site.register(models.PMarca, PMarcaAdmin)
 admin_site.register(models.PCategoria)
-admin_site.register(models.Bono)
 admin_site.register(models.BProducto, BProductoAdmin)
 admin_site.register(models.BMarca, BMarcaAdmin)
 admin_site.register(models.BCategoria, BCategoriaAdmin)
