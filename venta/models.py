@@ -138,12 +138,35 @@ class Provider(models.Model):
 	#end def
 #end class
 
+
+class Brand(models.Model):
+	service = models.ForeignKey(Service)
+	name = models.CharField(max_length=200)
+	description = models.CharField(max_length=800)
+	state = models.BooleanField(default=True)
+
+	def  __unicode__(self):
+		return u'%s'%self.name
+	# end class
+
+	def  __str__(self):
+		return u'%s'%self.name
+	# end class
+
+	class Meta:
+		verbose_name = "Marca"
+		verbose_name_plural = "Marcas"
+	# end class
+
+# en class
+
 class Product(models.Model):
 	METHODS = (
 		(True, 'PEPS'),
 		(False, 'UEPS')
 	)
 	category = models.ForeignKey(Category, verbose_name="Categoría")
+	brand = models.ForeignKey(Brand, verbose_name="Marca")
 	presentation = models.ForeignKey(Presentation, null=True, verbose_name="Presentación")
 	name = models.CharField(max_length=45, verbose_name="Nombre")
 	price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
