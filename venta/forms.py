@@ -152,3 +152,42 @@ class CashierForm(UserCreationForm):
 		return cashier
 	#end def
 #end class
+
+
+class BrandForm(forms.ModelForm):
+	class Meta:
+		model = models.Brand
+		fields = ['name','description']
+		exclude = ['state', 'service']
+		widgets = {
+            'description': forms.Textarea(attrs={'cols': 80, 'rows': 10}),
+            'name': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+	# end class
+# end class
+
+
+class BrandForm(forms.ModelForm):
+	class Meta:
+		model = models.Brand
+		fields = ['name','description']
+		exclude = ['state', 'service']
+		widgets = {
+            'description': forms.Textarea(attrs={'cols': 80, 'rows': 10}),
+            'name': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+	# end class
+# end class
+
+
+class BrandFormAdmin(forms.ModelForm):
+	class Meta:
+		model = models.Brand
+		fields = ['service','name','description']
+		exclude = ['state']
+		widgets = {
+            'description': forms.Textarea(attrs={'cols': 80, 'rows': 10}),
+            'name': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+	# end class
+# end class

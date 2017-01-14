@@ -7,6 +7,7 @@ from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 import models
 from django.db.models import Count, Sum
 from forms import ProductoForm, CellarForm, ProviderForm, CashierForm
+import forms
 
 class BuyProductStacked(NestedStackedInline):
 	model = models.BuyPoduct
@@ -52,8 +53,7 @@ class CellarAdmin(NestedModelAdmin):
 		queryset = super(CellarAdmin, self).get_queryset(request)
 		queryset = queryset.filter(service__userservice__user = user)
 		return queryset
-	#end def	
-
+	#end def
 #end class
 
 class BuyProductAdmin(NestedModelAdmin):
@@ -315,8 +315,42 @@ class ServiceAdmin(admin.ModelAdmin):
 	list_display = ["name", "id"]
 #end class
 
+
+class BrandAdmin(admin.ModelAdmin):
+	model = models.Brand
+	form = forms.BrandFormAdmin
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		query = super(BrandAdmin, self).get_queryset(request)
+		if  not user.is_superuser and user.is_staff:
+			query = query.filter(service__userservice__user = user)
+		return query
+	# end def
+
+	def get_form(self, request, obj=None, *args, **kwargs):
+		user = CuserMiddleware.get_user()
+		if not user.is_superuser and user.is_staff:
+			service = Service.objects.filter(userservice__user = user)
+			print 'debe cambiar el formulario ',len(service)
+			kwargs['form'] = forms.BrandForm
+		# end if
+		return super(BrandAdmin, self).get_form(request, obj, *args, **kwargs)
+	# end def
+
+	def save_model(self, request, obj, form, change):
+		user = CuserMiddleware.get_user()
+		if not user.is_superuser and user.is_staff:
+			service = Service.objects.filter(userservice__user = user).first()
+			if service:
+				obj.service = service
+			#end if
+		super(BrandAdmin, self).save_model(request, obj, form, change)
+	#end def
+# end class
+
 class CashierAdmin(admin.ModelAdmin):
-	model = models.Cashier 
+	model = models.Cashier
 	form = CashierForm
 
 	def get_queryset(self, request):
@@ -355,3 +389,4 @@ admin_site.register(models.Image, ImageAdmin)
 admin_site.register(models.Config)
 admin_site.register(models.Presentation, PresentationAdmin)
 admin_site.register(models.Cashier, CashierAdmin)
+admin_site.register(models.Brand, BrandAdmin)
