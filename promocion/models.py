@@ -8,8 +8,8 @@ from venta import models as venta
 class Oferta(models.Model):
     servicio = models.ForeignKey(venta.Service)
     codigo = models.CharField(max_length=20, null=True, blank=True)
-    tipo = models.IntegerField(choices=((1,'Descuento'),(2,'unidades')))
-    descripcion = models.CharField(max_length=400, blank=True, null=True)
+    tipo = models.IntegerField(choices=((1,'Descuento'),(2,'Monto')))
+    descripcion = models.CharField(max_length=400, blank=True, null=True, verbose_name='Descripción')
     inicio = models.DateField()
     fin = models.DateField()
     estado = models.BooleanField(default=True)
@@ -30,6 +30,7 @@ class Oferta(models.Model):
 
 class Promocion(Oferta):
     nombre = models.CharField(max_length=400)
+    valor = models.FloatField()
 
     def __unicode__(self):
         return self.nombre
