@@ -2,6 +2,7 @@ from django.contrib import admin
 from pventa.admin import admin_site
 import models
 import forms
+from venta import models as venta
 from cuser.middleware import CuserMiddleware
 # Register your models here.
 
@@ -14,8 +15,10 @@ class PProductoAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
     	user = CuserMiddleware.get_user()
     	query = super(PProductoAdmin, self).get_queryset(request)
+        print user.is_superuser, user.is_staff,len(query)
     	if  not user.is_superuser and user.is_staff:
-    		query = query.filter(service__userservice__user = user)
+    		query = query.filter(servicio__userservice__user = user)
+        print user.is_superuser, user.is_staff,len(query)
     	return query
     # end def
 
@@ -30,9 +33,11 @@ class PProductoAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
     	user = CuserMiddleware.get_user()
     	if not user.is_superuser and user.is_staff:
-    		service = Service.objects.filter(userservice__user = user).first()
+    		service = venta.Service.objects.filter(userservice__user = user).first()
     		if service:
+			print 'entroa el admin tales'
     			obj.servicio = service
+                        obj.save()
     		#end if
     	super(PProductoAdmin, self).save_model(request, obj, form, change)
     #end def
