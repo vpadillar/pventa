@@ -142,7 +142,7 @@ class Provider(models.Model):
 class Brand(models.Model):
 	service = models.ForeignKey(Service)
 	name = models.CharField(max_length=200, verbose_name='Nombre')
-	description = models.CharField(max_length=800, verbose_name='Descripción')
+	description = models.CharField(max_length=800, verbose_name='Descripción', null=True, blank=True)
 	state = models.BooleanField(default=True)
 
 	def  __unicode__(self):
