@@ -35,9 +35,8 @@ class PProductoAdmin(admin.ModelAdmin):
     	if not user.is_superuser and user.is_staff:
     		service = venta.Service.objects.filter(userservice__user = user).first()
     		if service:
-			print 'entroa el admin tales'
     			obj.servicio = service
-                        obj.save()
+                obj.save()
     		#end if
     	super(PProductoAdmin, self).save_model(request, obj, form, change)
     #end def
@@ -46,6 +45,36 @@ class PProductoAdmin(admin.ModelAdmin):
 
 class PMarcaAdmin(admin.ModelAdmin):
     filter_horizontal = ('marcas',)
+    model = models.PMarca
+    form = forms.PMarcaFormAdmin
+
+    def get_queryset(self, request):
+    	user = CuserMiddleware.get_user()
+    	query = super(PMarcaAdmin, self).get_queryset(request)
+    	if  not user.is_superuser and user.is_staff:
+    		query = query.filter(servicio__userservice__user = user)
+        #end if
+    	return query
+    # end def
+
+    def save_model(self, request, obj, form, change):
+    	user = CuserMiddleware.get_user()
+    	if not user.is_superuser and user.is_staff:
+    		service = venta.Service.objects.filter(userservice__user = user).first()
+    		if service:
+    			obj.servicio = service
+                obj.save()
+    		#end if
+    	super(PMarcaAdmin, self).save_model(request, obj, form, change)
+    #end def
+
+    def get_form(self, request, obj=None, *args, **kwargs):
+    	user = CuserMiddleware.get_user()
+    	if not user.is_superuser and user.is_staff:
+    		kwargs['form'] = forms.PMarcaForm
+    	# end if
+    	return super(PMarcaAdmin, self).get_form(request, obj, *args, **kwargs)
+    # end def
 #end class
 
 
