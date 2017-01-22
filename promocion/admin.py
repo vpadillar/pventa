@@ -80,6 +80,36 @@ class PMarcaAdmin(admin.ModelAdmin):
 
 class PCategoriaAdmin(admin.ModelAdmin):
     filter_horizontal = ('categorias',)
+    model = models.PMarca
+    form = forms.PCategoriaFormAdmin
+
+    def get_queryset(self, request):
+    	user = CuserMiddleware.get_user()
+    	query = super(PCategoriaAdmin, self).get_queryset(request)
+    	if  not user.is_superuser and user.is_staff:
+    		query = query.filter(servicio__userservice__user = user)
+        #end if
+    	return query
+    # end def
+
+    def save_model(self, request, obj, form, change):
+    	user = CuserMiddleware.get_user()
+    	if not user.is_superuser and user.is_staff:
+    		service = venta.Service.objects.filter(userservice__user = user).first()
+    		if service:
+    			obj.servicio = service
+                obj.save()
+    		#end if
+    	super(PCategoriaAdmin, self).save_model(request, obj, form, change)
+    #end def
+
+    def get_form(self, request, obj=None, *args, **kwargs):
+    	user = CuserMiddleware.get_user()
+    	if not user.is_superuser and user.is_staff:
+    		kwargs['form'] = forms.PCategoriaForm
+    	# end if
+    	return super(PCategoriaAdmin, self).get_form(request, obj, *args, **kwargs)
+    # end def
 #end class
 
 
@@ -100,7 +130,7 @@ class BCategoriaAdmin(admin.ModelAdmin):
 
 admin_site.register(models.PProducto, PProductoAdmin)
 admin_site.register(models.PMarca, PMarcaAdmin)
-admin_site.register(models.PCategoria)
+admin_site.register(models.PCategoria, PCategoriaAdmin)
 admin_site.register(models.BProducto, BProductoAdmin)
 admin_site.register(models.BMarca, BMarcaAdmin)
 admin_site.register(models.BCategoria, BCategoriaAdmin)
