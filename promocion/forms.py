@@ -447,3 +447,94 @@ class BCategoriaForm(forms.ModelForm):
         # en dif
     # end def
 # end class
+
+
+class BMarcaFormAdmin(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+		super(BMarcaFormAdmin, self).__init__(*args, **kwargs)
+		user = CuserMiddleware.get_user()
+                if not user.is_superuser and user.is_staff:
+		    self.fields["marcas"].queryset = venta.Brand.objects.filter(service__userservice__user = user)
+                else:
+		    self.fields["marcas"].queryset = venta.Brand.objects.all()
+	#end def
+
+    class Meta:
+        model = models.BMarca
+        exclude = ['estado', 'tipo']
+        fields = ['servicio','codigo', 'nombre', 'descripcion','inicio', 'fin','valor','marcas']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
+            'nombre': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+    # end class
+
+    def clean(self):
+        data = super(BMarcaFormAdmin, self).clean()
+        f1=data.get('inicio')
+        f2=data.get('fin')
+        if data.get('inicio'):
+            if data.get('inicio') < date.today():
+                self.add_error('inicio', 'La fecha de inicio debe ser mayor o igual a hoy.')
+            # end def
+        if data.get('fin'):
+            if data.get('fin') < date.today():
+                self.add_error('fin', 'La fecha de fin debe ser mayor o igual a hoy.')
+            # end def
+        if f1 >= f2:
+            self.add_error('fin', 'La fecha de fin debe ser mayor a la de inicio de la promocion.')
+        # end def
+        if data.get('valor') < 0 :
+            self.add_error('valor','El valor debe encontrase mayor a 0.')
+         # end if
+        # en dif
+    # end def
+# end class
+
+
+class BMarcaForm(forms.ModelForm):
+    class Meta:
+        model = models.BMarca
+        exclude = ['servicio','estado','tipo']
+        fields = ['codigo', 'nombre', 'descripcion','inicio', 'fin','valor','marcas']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'cols': 80, 'rows': 10}),
+        }
+    # end class
+
+    def __init__(self, *args, **kwargs):
+		super(BMarcaForm, self).__init__(*args, **kwargs)
+		user = CuserMiddleware.get_user()
+                if not user.is_superuser and user.is_staff:
+		    self.fields["marcas"].queryset = venta.Brand.objects.filter(service__userservice__user = user)
+                else:
+		    self.fields["marcas"].queryset = venta.Brand.objects.all()
+	#end def
+
+    def clean(self):
+        data = super(BMarcaForm, self).clean()
+        f1=data.get('inicio')
+        f2=data.get('fin')
+        if data.get('inicio'):
+            if data.get('inicio') < date.today():
+                self.add_error('inicio', 'La fecha de inicio debe ser mayor o igual a hoy.')
+            # end def
+        if data.get('fin'):
+            if data.get('fin') < date.today():
+                self.add_error('fin', 'La fecha de fin debe ser mayor o igual a hoy.')
+            # end def
+        if f1 >= f2:
+            self.add_error('fin', 'La fecha de fin debe ser mayor a la de inicio de la promocion.')
+        # end def
+        if data.get('tipo') == 1 :
+            if data.get('valor') < 0 or data.get('valor') > 100 :
+                self.add_error('valor','El valor debe encontrase entre 0 y 100.')
+             # end if
+        # en dif
+        if data.get('tipo') == 2:
+            if data.get('valor') < 0 :
+                self.add_error('valor','El valor debe encontrase mayor a 0.')
+             # end if
+        # en dif
+    # end def
+# end class
