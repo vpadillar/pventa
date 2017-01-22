@@ -278,3 +278,172 @@ class PCategoriaForm(forms.ModelForm):
         # en dif
     # end def
 # end class
+
+
+class BProductoForm(forms.ModelForm):
+    class Meta:
+        model = models.BProducto
+        exclude = ['servicio','estado','tipo']
+        fields = ['codigo', 'nombre', 'descripcion','inicio', 'fin','valor','producto']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'cols': 80, 'rows': 10}),
+        }
+    # end class
+
+    def clean(self):
+        data = super(BProductoForm, self).clean()
+        f1=data.get('inicio')
+        f2=data.get('fin')
+        if data.get('inicio'):
+            if data.get('inicio') < date.today():
+                self.add_error('inicio', 'La fecha de inicio debe ser mayor o igual a hoy.')
+            # end def
+        if data.get('fin'):
+            if data.get('fin') < date.today():
+                self.add_error('fin', 'La fecha de fin debe ser mayor o igual a hoy.')
+            # end def
+        if f1 >= f2:
+            self.add_error('fin', 'La fecha de fin debe ser mayor a la de inicio de la promocion.')
+        # end def
+        if data.get('tipo') == 1 :
+            if data.get('valor') < 0 or data.get('valor') > 100 :
+                self.add_error('valor','El valor debe encontrase entre 0 y 100.')
+             # end if
+        # en dif
+        if data.get('tipo') == 2:
+            if data.get('valor') < 0 :
+                self.add_error('valor','El valor debe encontrase mayor a 0.')
+             # end if
+        # en dif
+    # end def
+# end class
+
+
+class BProductoFormAdmin(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+		super(BProductoFormAdmin, self).__init__(*args, **kwargs)
+		user = CuserMiddleware.get_user()
+                if not user.is_superuser and user.is_staff:
+		    self.fields["producto"].queryset = venta.Product.objects.filter(brand__service__userservice__user = user)
+                else:
+		    self.fields["producto"].queryset = venta.Product.objects.all()
+	#end def
+
+    class Meta:
+        model = models.BProducto
+        exclude = ['estado', 'tipo']
+        fields = ['servicio','codigo', 'nombre', 'descripcion','inicio', 'fin','valor','producto']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
+            'nombre': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+    # end class
+
+    def clean(self):
+        data = super(BProductoFormAdmin, self).clean()
+        f1=data.get('inicio')
+        f2=data.get('fin')
+        if data.get('inicio'):
+            if data.get('inicio') < date.today():
+                self.add_error('inicio', 'La fecha de inicio debe ser mayor o igual a hoy.')
+            # end def
+        if data.get('fin'):
+            if data.get('fin') < date.today():
+                self.add_error('fin', 'La fecha de fin debe ser mayor o igual a hoy.')
+            # end def
+        if f1 >= f2:
+            self.add_error('fin', 'La fecha de fin debe ser mayor a la de inicio de la promocion.')
+        # end def
+        if data.get('valor') < 0 :
+            self.add_error('valor','El valor debe encontrase mayor a 0.')
+         # end if
+        # en dif
+    # end def
+# end class
+
+
+class BCategoriaFormAdmin(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+		super(BCategoriaFormAdmin, self).__init__(*args, **kwargs)
+		self.fields["categorias"].queryset = venta.Category.objects.all()
+	#end def
+
+    class Meta:
+        model = models.BCategoria
+        exclude = ['estado', 'tipo']
+        fields = ['servicio','codigo', 'nombre', 'descripcion','inicio', 'fin','valor','categorias']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
+            'nombre': forms.Textarea(attrs={'cols': 80, 'rows': 2}),
+        }
+    # end class
+
+    def clean(self):
+        data = super(BCategoriaFormAdmin, self).clean()
+        f1=data.get('inicio')
+        f2=data.get('fin')
+        if data.get('inicio'):
+            if data.get('inicio') < date.today():
+                self.add_error('inicio', 'La fecha de inicio debe ser mayor o igual a hoy.')
+            # end def
+        if data.get('fin'):
+            if data.get('fin') < date.today():
+                self.add_error('fin', 'La fecha de fin debe ser mayor o igual a hoy.')
+            # end def
+        if f1 >= f2:
+            self.add_error('fin', 'La fecha de fin debe ser mayor a la de inicio de la promocion.')
+        # end def
+        if data.get('valor') < 0 :
+            self.add_error('valor','El valor debe encontrase mayor a 0.')
+         # end if
+        # en dif
+    # end def
+# end class
+
+
+class BCategoriaForm(forms.ModelForm):
+    class Meta:
+        model = models.BCategoria
+        exclude = ['servicio','estado','tipo']
+        fields = ['codigo', 'nombre', 'descripcion','inicio', 'fin','valor','categorias']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'cols': 80, 'rows': 10}),
+        }
+    # end class
+
+    def __init__(self, *args, **kwargs):
+		super(BCategoriaForm, self).__init__(*args, **kwargs)
+		user = CuserMiddleware.get_user()
+                if not user.is_superuser and user.is_staff:
+		    self.fields["categorias"].queryset = venta.Category.objects.filter(service__userservice__user = user)
+                else:
+		    self.fields["categorias"].queryset = venta.Category.objects.all()
+	#end def
+
+    def clean(self):
+        data = super(BCategoriaForm, self).clean()
+        f1=data.get('inicio')
+        f2=data.get('fin')
+        if data.get('inicio'):
+            if data.get('inicio') < date.today():
+                self.add_error('inicio', 'La fecha de inicio debe ser mayor o igual a hoy.')
+            # end def
+        if data.get('fin'):
+            if data.get('fin') < date.today():
+                self.add_error('fin', 'La fecha de fin debe ser mayor o igual a hoy.')
+            # end def
+        if f1 >= f2:
+            self.add_error('fin', 'La fecha de fin debe ser mayor a la de inicio de la promocion.')
+        # end def
+        if data.get('tipo') == 1 :
+            if data.get('valor') < 0 or data.get('valor') > 100 :
+                self.add_error('valor','El valor debe encontrase entre 0 y 100.')
+             # end if
+        # en dif
+        if data.get('tipo') == 2:
+            if data.get('valor') < 0 :
+                self.add_error('valor','El valor debe encontrase mayor a 0.')
+             # end if
+        # en dif
+    # end def
+# end class
