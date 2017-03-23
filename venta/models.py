@@ -33,7 +33,6 @@ class Service(models.Model):
 	moviles = models.TextField()
 	configuracion = models.ForeignKey(Config)
 
-
 	class Meta:
 		verbose_name = "Servicio"
 		verbose_name_plural = "Servicios"
@@ -139,12 +138,35 @@ class Provider(models.Model):
 	#end def
 #end class
 
+
+class Brand(models.Model):
+	service = models.ForeignKey(Service)
+	name = models.CharField(max_length=200, verbose_name='Nombre')
+	description = models.CharField(max_length=800, verbose_name='Descripción', null=True, blank=True)
+	state = models.BooleanField(default=True)
+
+	def  __unicode__(self):
+		return u'%s'%self.name
+	# end class
+
+	def  __str__(self):
+		return u'%s'%self.name
+	# end class
+
+	class Meta:
+		verbose_name = "Marca"
+		verbose_name_plural = "Marcas"
+	# end class
+
+# en class
+
 class Product(models.Model):
 	METHODS = (
 		(True, 'PEPS'),
 		(False, 'UEPS')
 	)
 	category = models.ForeignKey(Category, verbose_name="Categoría")
+	brand = models.ForeignKey(Brand, verbose_name="Marca")
 	presentation = models.ForeignKey(Presentation, null=True, verbose_name="Presentación")
 	name = models.CharField(max_length=45, verbose_name="Nombre")
 	price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
@@ -319,6 +341,18 @@ class Order(models.Model):
 		#end if
 		return "%s%s-%s-%s" % (cero, str(self.date.day), (months[self.date.month]), str(self.date.year))
 	#end def
+
+	def save(self):
+		obj = super(Order, self).save()
+		items = ItemOrder.objects.filter(order=self)
+		print items
+		for item in items:
+			if hasattr(item.product, 'dish'):
+				item.product.dish.consume(self, item.count)
+			# end if
+		# end for
+		return obj
+	# end def
 #end class
 
 
@@ -338,6 +372,7 @@ class ItemOrder(models.Model):
 #end class
 
 class ProductRequest(models.Model):
+	service = models.ForeignKey(Service, verbose_name="Servicio")
 	date = models.DateTimeField(auto_now_add = True)
 	class Meta:
 		verbose_name = "Pedido de producto"
@@ -368,4 +403,19 @@ class ItemRequest(models.Model):
 	def __unicode__(self):
 		return "%s x%s" % (str(self.product), str(self.count))
 	#end def
+#end class
+
+class Cashier(User):
+
+	service = models.ForeignKey(Service, verbose_name="Servicio")
+
+	class Meta:
+		verbose_name = "Cajero"
+		verbose_name_plural = "Cajeros"
+	#end class
+
+	def __unicode__(self):
+		return self.name
+	#end def
+
 #end class

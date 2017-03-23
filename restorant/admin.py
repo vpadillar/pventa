@@ -4,6 +4,7 @@ from pventa.admin import admin_site
 from cuser.middleware import CuserMiddleware
 from django.db.models import Count, Sum
 import models
+import forms
 
 class ConsumptionDishInline(admin.StackedInline):
 	model = models.ConsumptionDish
@@ -11,8 +12,17 @@ class ConsumptionDishInline(admin.StackedInline):
 
 class DishAdmin(admin.ModelAdmin):
 	model = models.Dish
-	list_display = ['thumbnail', 'name']
+	list_display = ['thumbnail', 'name', 'price']
 	inlines = [ConsumptionDishInline]
+	search_fields = ['name', 'price']
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(DishAdmin, self).get_queryset(request)
+		queryset = queryset.filter(category__service__userservice__user = user)
+		return queryset
+	#end def
+
 #end class
 
 class TableAdmin(admin.ModelAdmin):
@@ -31,6 +41,7 @@ class BuySupplyStacked(admin.StackedInline):
 	model = models.BuySupply
 	extra = 0
 	readonly_fields = ('current_count', 'date')
+	form = forms.BuySupplyForm
 
 	def get_queryset(self, request):
 		queryset = super(BuySupplyStacked, self).get_queryset(request)
@@ -39,7 +50,7 @@ class BuySupplyStacked(admin.StackedInline):
 	#end def
 
 	def has_add_permission(self, obj):
-		return False
+		return True
 	#end def
 
 	def has_delete_permission(self, *obj):
@@ -49,15 +60,25 @@ class BuySupplyStacked(admin.StackedInline):
 
 class SupplyAdmin(admin.ModelAdmin):
 	models = models.Supply
-	exclude = ['stock', 'stock_refill', 'minimun_stock']
+	exclude = ['stock', 'stock_refill', 'minimun_stock', 'service']
 	inlines = [BuySupplyStacked]
+	list_display = ['name', 'unidad']
+	search_fields = ['name', 'unidad']
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(SupplyAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
 
 #end class
 
 class ConsumptionAdmin(admin.ModelAdmin):
-	models = models.Supply
+	models = models.Consumption
 	list_display = ['supply', 'consumo', 'product', 'date', 'canceled']
-	search_fields = ['supply', 'consumption', 'product']
+	search_fields = ['supply__supply__name', 'consumption', 'product__name']
 	list_filter = ['date', 'canceled', 'product']
 	readonly_fields = ['product', 'supply', 'consumption', 'date', 'order']
 
@@ -72,17 +93,49 @@ class ConsumptionAdmin(admin.ModelAdmin):
 	def has_delete_permission(self, *obj):
 		return False
 	#end def
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(ConsumptionAdmin, self).get_queryset(request)
+		queryset = queryset.filter(supply__supply__service__userservice__user = user)
+		return queryset
+	#end def
 #end class
 
+class ConsuptionInline(admin.TabularInline):
+	model = models.Consumption
+	extra = 0
+	readonly_fields = ['product', 'consumption', 'order', 'date', 'canceled']
+
+	def has_add_permission(self, obj):
+		return False
+	#end def
+
+	def has_delete_permission(self, *obj):
+		return False
+	#end def
+# end class
+
 class BuySupplyAdmin(admin.ModelAdmin):
+	inlines = [ConsuptionInline]
 	model = models.BuySupply
+	list_display = ['supply', 'buy_count', 'date']
+	search_fields = ['supply', 'buy_count']	
 	readonly_fields = ('current_count',)
+
 	def save_model(self, request, obj, form, change):
 		if not change:
 			obj.current_count = obj.buy_count
 			obj.save()
 		#end if
 		super(BuySupplyAdmin, self).save_model(request, obj, form, change)
+	#end def
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(BuySupplyAdmin, self).get_queryset(request)
+		queryset = queryset.filter(supply__service__userservice__user = user)
+		return queryset
 	#end def
 #end class
 
@@ -94,6 +147,33 @@ class ItemRequestInline(admin.StackedInline):
 class SupplyRequestAdmin(admin.ModelAdmin):
 	model = models.SupplyRequest
 	inlines = [ItemRequestInline]
+	exclude = ["service"]
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(SupplyRequestAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
+#end class
+
+class BillBuySupplyAdmin(admin.ModelAdmin):
+	inlines = [BuySupplyStacked]
+	model = models.BillBuySupply
+#end class
+
+class SetTableAdmin(admin.ModelAdmin):
+	model = models.SetTable
+	list_display = ['table', 'order']
+	search_fields = ['table', 'order']
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(SetTableAdmin, self).get_queryset(request)
+		queryset = queryset.filter(table__service__userservice__user = user)
+		return queryset
+	#end def
 #end class
 
 admin_site.register(models.SupplyRequest, SupplyRequestAdmin)
@@ -102,4 +182,5 @@ admin_site.register(models.Dish, DishAdmin)
 admin_site.register(models.Table, TableAdmin)
 admin_site.register(models.Supply, SupplyAdmin)
 admin_site.register(models.Consumption, ConsumptionAdmin)
-admin_site.register(models.SetTable)
+admin_site.register(models.SetTable, SetTableAdmin)
+admin_site.register(models.BillBuySupply, BillBuySupplyAdmin)

@@ -6,7 +6,8 @@ from django.core.exceptions import ValidationError
 from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 import models
 from django.db.models import Count, Sum
-from forms import ProductoForm, CellarForm, ProviderForm
+from forms import ProductoForm, CellarForm, ProviderForm, CashierForm
+import forms
 
 class BuyProductStacked(NestedStackedInline):
 	model = models.BuyPoduct
@@ -14,7 +15,7 @@ class BuyProductStacked(NestedStackedInline):
 	readonly_fields = ('current_count',)
 
 	def has_add_permission(self, obj):
-		return False
+		return True
 	#end def
 
 	def has_delete_permission(self, *obj):
@@ -46,11 +47,38 @@ class CellarAdmin(NestedModelAdmin):
 	model = models.Cellar
 	inlines = [BuyPresentationStack]
 	form = CellarForm
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(CellarAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+#end class
+
+class BuyProductAdmin(NestedModelAdmin):
+	model = models.BuyPoduct
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(BuyProductAdmin, self).get_queryset(request)
+		queryset = queryset.filter(buypresentation__product__category__service__userservice__user = user)
+		return queryset
+	#end def
+
 #end class
 
 class ProviderAdmin(NestedModelAdmin):
 	model = models.Provider
 	form = ProviderForm
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(ProviderAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
 #end class
 
 
@@ -81,6 +109,8 @@ class CategoryAdmin(admin.ModelAdmin):
 		super(CategoryAdmin, self).save_model(request, obj, form, change)
 	#end def
 #end class
+
+
 
 class ProductAdmin(NestedModelAdmin):
 	model = models.Product
@@ -223,10 +253,37 @@ class OrderAdmin(admin.ModelAdmin):
 class PresentationAdmin(admin.ModelAdmin):
 	model = models.Presentation
 	exclude = ['service']
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(PresentationAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
 #end def
+
+class ImageAdmin(admin.ModelAdmin):
+	model = models.Image
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(ImageAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+
+#end class
 
 class SellAdmin(admin.ModelAdmin):
 	model = models.Sell
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(SellAdmin, self).get_queryset(request)
+		queryset = queryset.filter(bought__buypresentation__product__category__service__userservice__user = user)
+		return queryset
+	#end def
 
 	def save_model(self, request, obj, form, change):
 		if not change:
@@ -245,22 +302,92 @@ class ItemRequestInline(admin.StackedInline):
 class ProductRequestAdmin(admin.ModelAdmin):
 	model = models.ProductRequest
 	inlines = [ItemRequestInline]
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(ProductRequestAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+#end class
+
+class ServiceAdmin(admin.ModelAdmin):
+	model = models.Service
+	list_display = ["name", "id"]
 #end class
 
 
+class BrandAdmin(admin.ModelAdmin):
+	model = models.Brand
+	form = forms.BrandFormAdmin
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		query = super(BrandAdmin, self).get_queryset(request)
+		if  not user.is_superuser and user.is_staff:
+			query = query.filter(service__userservice__user = user)
+		return query
+	# end def
+
+	def get_form(self, request, obj=None, *args, **kwargs):
+		user = CuserMiddleware.get_user()
+		if not user.is_superuser and user.is_staff:
+			service = Service.objects.filter(userservice__user = user)
+			print 'debe cambiar el formulario ',len(service)
+			kwargs['form'] = forms.BrandForm
+		# end if
+		return super(BrandAdmin, self).get_form(request, obj, *args, **kwargs)
+	# end def
+
+	def save_model(self, request, obj, form, change):
+		user = CuserMiddleware.get_user()
+		if not user.is_superuser and user.is_staff:
+			service = Service.objects.filter(userservice__user = user).first()
+			if service:
+				obj.service = service
+			#end if
+		super(BrandAdmin, self).save_model(request, obj, form, change)
+	#end def
+# end class
+
+class CashierAdmin(admin.ModelAdmin):
+	model = models.Cashier
+	form = CashierForm
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(CashierAdmin, self).get_queryset(request)
+		queryset = queryset.filter(service__userservice__user = user)
+		return queryset
+	#end def
+#end class
+
+class BuyPresentationAdmin(admin.ModelAdmin):
+	model = models.BuyPresentation
+
+	def get_queryset(self, request):
+		user = CuserMiddleware.get_user()
+		queryset = super(BuyPresentationAdmin, self).get_queryset(request)
+		queryset = queryset.filter(provider__service__userservice__user = user)
+		return queryset
+	#end def
+#end class
+
 admin_site.register(models.ProductRequest, ProductRequestAdmin)
 admin_site.register(models.Cellar, CellarAdmin)
-admin_site.register(models.BuyPresentation)
+admin_site.register(models.BuyPresentation, BuyPresentationAdmin)
 admin_site.register(models.Provider, ProviderAdmin)
-admin_site.register(models.BuyPoduct)
+admin_site.register(models.BuyPoduct, BuyProductAdmin)
 admin_site.register(models.Sell, SellAdmin)
 admin_site.register(models.Category, CategoryAdmin)
 admin_site.register(models.Product, ProductAdmin)
 admin_site.register(models.Client, ClientAdmin)
 admin_site.register(models.Bill, BillAdmin)
 admin_site.register(models.Order, OrderAdmin)
-admin_site.register(models.Service)
+admin_site.register(models.Service, ServiceAdmin)
 admin_site.register(models.UserService)
-admin_site.register(models.Image)
+admin_site.register(models.Image, ImageAdmin)
 admin_site.register(models.Config)
 admin_site.register(models.Presentation, PresentationAdmin)
+admin_site.register(models.Cashier, CashierAdmin)
+admin_site.register(models.Brand, BrandAdmin)
