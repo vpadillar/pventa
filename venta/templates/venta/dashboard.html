@@ -1,32 +1,73 @@
-<div id="dashboard">
-	<ul>
+<style type="text/css">
+	#dashboard i{
+		font-size: 100px;
+	}
+	#dashboard .col{
+		cursor: pointer;
+	}
+
+	#dashboard .v-center{
+		height: calc(100% - 555px);
+		min-height: 300px;
+	}
+	#dashboard .v-center .col{
+		display: inline-block;
+	}
+
+</style>
+<div id="dashboard" class="container">
+	<div class="row v-center">
 		{% if groups.0.name == 'mesero' or groups.1.name == 'mesero' %}
-		<li ng-click="goTo('orders')">
-			<div class="img orders"></div>
-			<span color="text-primary">Órdenes</span>
-		</li>
+		<div class="col s12 m6 l3 " ng-click="goTo('orders')">
+			<div class="card blue-grey darken-1">
+	            <div class="card-content white-text center">
+	              <i class="material-icons">shopping_cart</i>
+	            </div>
+	            <div class="card-action center">
+	              <a href="#">Órdenes</a>
+	          	</div>
+	        </div>
+		</div>
 		{% endif %}
 		{% if groups.0.name  == 'cajero' or groups.1.name  == 'cajero' %}
-		<li ng-click="goTo('pay')">
-			<div class="img orders"></div>
-			<span color="text-primary">Pagar</span>
-		</li>
+		<div class="col s12 m6 l3 " ng-click="goTo('pay')">
+			<div class="card blue-grey darken-1">
+	            <div class="card-content white-text center">
+	              <i class="material-icons">payment</i>
+	            </div>
+	            <div class="card-action center">
+	              <a href="#">Pagar</a>
+	          	</div>
+	        </div>
+		</div>
 		{% endif %}
 		{% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
-		<li ng-click="goTo('products')">
-			<div class="img products"></div>
-			<span color="text-primary">Productos</span>
-		</li>
+		<div class="col s12 m6 l3 " ng-click="goTo('products')">
+			<div class="card blue-grey darken-1">
+	            <div class="card-content white-text center">
+	              <i class="material-icons">shopping_basket</i>
+	            </div>
+	            <div class="card-action center">
+	              <a href="#">Productos</a>
+	          	</div>
+	        </div>
+		</div>
 		{% endif %}
 		{% if groups.0.name == 'cajero' or groups.1.name == 'cajero' %}
-		<li ng-click="goTo('categories')">
-			<div class="img categories"></div>
-			<span color="text-primary">Categorias</span>
-		</li>
+		<div class="col s12 m6 l3 " ng-click="goTo('categories')">
+			<div class="card blue-grey darken-1">
+	            <div class="card-content white-text center">
+	              <i class="material-icons">label</i>
+	            </div>
+	            <div class="card-action center">
+	              <a href="#">Categorías</a>
+	          	</div>
+	        </div>
+		</div>
 		{% endif %}
 		<!--li ng-click="goTo('clients')">
 			<div class="img clients"></div>
 			<span color="text-primary">Clientes</span>
 		</li-->
-	</ul>
+	</div>
 </div>

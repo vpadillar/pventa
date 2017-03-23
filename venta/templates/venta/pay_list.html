@@ -1,6 +1,81 @@
 <div id="orders">
-	<h2>ÓRDENES</h2>
-	<div class="parent">
+	<div class="row">
+		<h2>ÓRDENES</h2>
+		<div class="col s12 m9 l10">
+			<div class="card darken-1">
+				<div class="card-content white-text">
+				  <table>
+					<thead>
+						<tr>
+							<th>
+								<span># Orden</span>
+							</th>
+							<th>
+								<span>Fecha</span>
+							</th>
+							<th>
+								<span>Estado</span>
+							</th>
+							<th>
+								<span># Productos</span>
+							</th>
+							<th>
+								<span>Precio</span>
+							</th>
+							<th>
+								<span>Pagar</span>
+							</th>
+							<th>
+							</th>
+						</tr>
+					</thead>
+			        <tbody>
+						<tr ng-repeat="o in orders">
+							<td>
+								<span>[[o.id]]</span>
+							</td>
+							<td>
+								<span>[[o.date]]</span>
+							</td>
+							<td>
+								<span>[[o.canceled?"Cancelado":"Completado"]]</span>
+							</td>
+							<td>
+								<span>[[o.products]]</span>
+							</td>
+							<td>
+								<span>$[[o.total]]</span>
+							</td>
+							<th class="center">
+								<a href="#" style="margin: 0 auto" class="button" ng-click="goTo('confirm', {'order_id':o.id})">
+									<i class="material-icons">credit_card</i>
+								</a>
+							</th>
+						</tr>
+					</tbody>
+			      </table>
+				</div>
+			</div>
+	    </div>
+
+		<div class="col s12 m3 l2">
+			<div class="card darken-1">
+				<div class="card-content white-text">
+			    	<div class="collection">
+						<a ng-repeat="t in tables" ng-click="goTo('confirm', {'order_id':t.order_id})" class="collection-item">
+							[[t.name]]
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	    <div class="fixed-action-btn">
+		    <a ng-click="goTo('orders_add')" class="btn-floating btn-large red">
+		      <i class="large material-icons">add</i>
+		    </a>
+		</div>
+    </div>
+	<!--div class="parent">
 		<div class="table-list" background="text">
 			<table class="head">
 				<colgroup>
@@ -101,5 +176,5 @@
 				</a>
 			</p>
 		</div>
-	</div>
+	</div-->
 </div>

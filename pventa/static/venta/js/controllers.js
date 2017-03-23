@@ -3,6 +3,8 @@ var controllers = angular.module('controllers', []);
 controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
     function($scope, $http, $stateParams) {
         $scope.search = "";
+        $scope.query = "";
+        $scope.category = {id:0};
         $scope.order = {};
         $scope.total = 0;
         $scope.order_id = $stateParams.order_id;
@@ -51,21 +53,20 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
             }).error(function(data) {
                 $scope.goTo('dashboard');
             });
-            $http.get('/ws/settable/?order=' + $scope.order_id).success(function(data) {
-               console.log("gt mesa", data.object_list[0]);
-                if (data.object_list[0]) {
-										console.log(data.object_list[0].id, "dd");
-                    $scope.table_selected = {
-                      id: data.object_list[0].id,
-											table: data.object_list[0].table_id,
-											order: data.object_list[0].order_id
-										};
-                }
+            $http.get('/ws/settable/?order=' + $scope.order_id)
+                .success(function(data) {
+                    if (data.object_list[0]) {
+                        $scope.table_selected = {
+                            id: data.object_list[0].id,
+        					table: data.object_list[0].table_id,
+        					order: data.object_list[0].order_id
+    					};
+                    }
             });
             $http.get('/ws/tables/?aviable=True')
                 .success(function(data) {
                     $scope.tables = data.object_list;
-                });
+            });
         } else {
             $http.get('/ws/nocount/').success(function(data) {
                 $scope.nocount = data;
@@ -73,7 +74,7 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
             $http.get('/ws/tables/?aviable=True')
                 .success(function(data) {
                     $scope.tables = data.object_list;
-                });
+            });
         }
         $scope.del = function() {
             var ok = confirm("¿Está seguro de borrar el elemento?");
@@ -91,14 +92,23 @@ controllers.controller('order_controller', ['$scope', '$http', '$stateParams',
             $http.get('/ws/categorys/?search=' + $scope.search)
                 .success(function(data) {
                     $scope.categorys = data.object_list;
-                });
-            };
+            });
+        };
 
-        $scope.load_products = function(category) {
-            $http.get('/ws/products/?format=json&category=' + category)
-                .success(function(data) {
-                    $scope.products = data.object_list;
+        $scope.search_category = function(category){
+            $scope.category = category;
+            $scope.load_products();
+        };
+
+        $scope.load_products = function() {
+            if ($scope.category.id == 0 && $scope.query == ''){
+               $scope.products = []; 
+            }else{
+                $http.get('/ws/products/?format=json' + ($scope.category.id>0?'&category=' + $scope.category.id:'') + '&search=' + $scope.query)
+                    .success(function(data) {
+                        $scope.products = data.object_list;
                 });
+            }
         };
 
         $scope.minus_product = function(product_obj) {
@@ -376,6 +386,7 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
             });
         };
         $scope.print_bill = function(success, error) {
+            console.log($scope.conf.impresora);
             try {
                 if ($scope.conf.impresora){
                     var data = {
@@ -400,10 +411,10 @@ controllers.controller('confirm_controller', ['$scope', '$http', '$stateParams',
         };
         $scope.pv_print = function() {
             $scope.print_bill(function(data) {
-                window.location.reload();
+                //window.location.reload();
             }, function(data) {
                 alert("Ocurrió un error al intentar imprimir");
-                window.location.reload();
+                //window.location.reload();
             });
         }
         $scope.save = function() {
@@ -609,20 +620,14 @@ function default_crud_controller($scope, $http, $stateParams, object_name, attri
                     }
                 }
             }
-            var success = document.getElementById("success");
-
-            success.setAttribute("appear", "");
+            Materialize.toast('Guardado exitoso', 1300)
             window.setTimeout(function() {
-                success.removeAttribute("appear");
-            }, 1500);
+                $scope.goTo('products');
+            }, 1000);
         }).error(function(data) {
-            var button = document.getElementById("add-button");
-            var form = document.getElementById("form");
-
-            button.setAttribute("ripple", "");
-            form.setAttribute("show", "");
+            Materialize.toast('Error al guardado', 1300)
             window.setTimeout(function() {
-                button.removeAttribute("ripple");
+                $scope.goTo('products');
             }, 1000);
         });
     };

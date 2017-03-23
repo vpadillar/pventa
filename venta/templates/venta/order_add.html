@@ -1,115 +1,167 @@
-<div id="order-add">
-	<div class="parent">
-		<section id="category" class="category-list" border="dark-primary">
-			<input type="search" ng-model="search" ng-change="load_categorys()">
-			<i class="material-icons">search</i>
-			<ul>
-				<li ng-repeat="c in categorys" ng-click="load_products(c.id)">
-					[[c.name]]
-				</li>
-			</ul>
-		</section>
-		<div class="table-list" background="text">
-			<div class="tools"><input type="text" id="search_tab" placeholder="Criterio de busqueda" ng-model="searchName"></div>
-			<table class="head">
-				<colgroup>
-						<col width="250px"></col>
-						<col width="200px"></col>
-						<col width="200px"></col>
-						<col width="200px"></col>
-				</colgroup>
-				<thead>
-					<tr>
-						<th>
-							<span>Producto</span>
-						</th>
-						<th>
-							<span>PrecioUntario</span>
-						</th>
-						<th></th>
-					</tr>
-				</thead>
-			</table>
-			<div class="scroll">
-				<table class="body">
-					<colgroup>
-						<col width="250px"></col>
-						<col width="200px"></col>
-						<col width="200px"></col>
-						<col width="200px"></col>
-					</colgroup>
-					<tbody>
-						<tr ng-repeat="p in products| filter:searchName">
-							<td>
-								<span>[[p.name]]</span>
-							</td>
-							<td>
-								<span>[[p.price]]</span>
-							</td>
-							<th>
-								<a class="button" color="text" background="accent" ng-click="minus_product(p)">
-									<i class="material-icons">remove</i>
-								</a>
-								<input type="text" ng-model="order[p.id].count" value="0">
-								<a class="button" color="text" background="accent" ng-click="plus_product(p)">
-									<i class="material-icons">add</i>
-								</a>
-							</th>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="scroll tables">
-				<ul>
-					<li ng-repeat="t in tables" ng-click="table_selected.table = t.id">
-						<span>[[t.name]]</span>
-						<i class="material-icons" ng-show="table_selected.table === t.id">check</i>
-						<i class="material-icons" ng-show="table_selected.table !== t.id">touch_app</i>
-					</li>
-				</ul>
+<style type="text/css">
+	.search-icon{
+		font-size: 22px;
+	}
+	input[type="search"]{
+		height: 30px;
+	}
+	input.mini{
+		width: 50px;
+		text-align: center;
+	}
+	a.button{
+		cursor: pointer;
+		padding: 7px 10px;
+		font-size: 18px;
+	}
+	.buttons{
+		text-align: right;
+	}
+	.boucher table{
+		min-height: 200px;
+		display: block;
+	}
+	.product .img{
+		width: 100%;
+		height: 100px;
+		background-color: #ddd;
+		text-align: right;
+	}
+	.product .content{
+		padding: 10px;
+	}
+	.product .data{
+		margin: 10px;
+		border: solid #ddd 1px;
+		
+	}
+	.product .title{
+		font-weight: bold;
+		overflow: hidden;
+		height: 40px;
+	}
+	.product-list{
+		text-align: justify;
+	}
+
+	.tool{
+		text-align: right;
+		margin-top: 20px;
+	}
+	.tool input{
+		margin: 0px;
+	}
+
+</style>
+<div id="products">
+
+<div class="row">
+
+	<div class="col s12 m3 l2">
+		<div class="card darken-1">
+			<div class="card-content">
+				<div class="row">
+					<input class="col s10" type="search" ng-model="search" ng-change="load_categorys()">
+					<span  class="col s2" >
+						<i class="search-icon material-icons">search</i>
+					</span>
+				</div>
+		    	<div class="collection" >
+		    		<div class="collection-item">
+			    		<input type="radio"  ng-change="load_products()" name="category" id="category_0" ng-model="category.id" value="0">
+						<label for="category_0">
+							Todas
+						</label>
+					</div>
+		    		<div ng-repeat="c in categorys" class="collection-item">
+			    		<input type="radio"  ng-change="load_products()" name="category" id="category_[[c.id]]" ng-model="category.id" value="[[c.id]]">
+						<label for="category_[[c.id]]">
+							[[c.name]]
+						</label>
+					</div>
+				</div>
 			</div>
 		</div>
-		<section class="voucher">
-			<div class="cnum"  background="text">
-				<span>Cuenta No: [[nocount]]</span>
-				<a class="button pay" ng-show="order_id" color="text" background="accent" ng-click="del()">
-					<i class="material-icons">delete</i>
-				</a>
+	</div>
+	<div class="col s12 m7 l8">
+		<div class="card darken-1">
+			<div class="card-content">
+				<h3>PRODUCTOS</h3>
+				<div class="tools">
+					<input type="search" id="search_tab" placeholder="Criterio de busqueda" ng-model="query" ng-change="load_products()">
+				</div>
+				<div class="row product-list">
+					<div class="col s12 m3 l3 product" ng-repeat="p in products">
+				
+						<div class="data">
+							<div class="img" style="background-image: url();">
+								<div class="chip">p1</div>
+							</div>
+							<div class="content">
+								<div class="title">[[p.name]]</div>
+								<div>[[p.presentation__name]]</div>
+								<div>$[[p.price]]</div>
+								<div class="tool">
+									<a class="button" background="accent" color="text" ng-click="minus_product(p)">
+										-1
+									</a>
+									<input class="mini" type="text" ng-model="order[p.id].count" value="0">
+									<a class="button" background="accent" color="text" ng-click="plus_product(p)">
+										+1
+									</a>
+									
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="spacer"  background="text">
-				<table>
-					<tr ng-repeat="o in order">
-						<td>
-							<span>[[o.product_name]]</span>
-						</td>
-						<td>
-							<span> x [[o.count]]</span>
-						</td>
-						<td>
-							<span>$[[o.total_price]]</span>
-						</td>
-					</tr>
-				</table>
-			</div>
+		</div>
+    </div>
+	<div class="col s12 m3 l2">
+		<div class="card darken-1">
+			<div class="card-content boucher">
+				<div class="cnum"  background="text">
+					<h5>Cuenta No: [[nocount]]</h5>
+					<a class="button pay" ng-show="order_id" color="text" background="accent" ng-click="del()">
+						<i class="material-icons">delete</i>
+					</a>
+				</div>
+				<div class="spacer" background="text">
+					<table>
+						<tr ng-repeat="o in order">
+							<td>
+								<span>[[o.product_name]]</span>
+							</td>
+							<td width="50">
+								<span> x [[o.count]]</span>
+							</td>
+							<td>
+								<span>$[[o.total_price]]</span>
+							</td>
+						</tr>
+					</table>
+				</div>
 
-			<div class="total"  background="text">
-				<span>Total: $[[total]]</span>
+				<div class="total"  background="text">
+					<b>Total: $[[total]]</b>
+				</div>
+				<div class="buttons">
+					<a ng-show="order_id==null&&!tables[0]" class="button pay" color="accent" >
+						NO HAY MESAS
+					</a>
+					<a ng-show="order_id==null&&tables[0]" class="button pay" color="accent" t" ng-click="pay()">
+						ENVIAR ORDEN
+					</a>
+					<a ng-show="order_id!=null&&!paid" class="button pay" color="accent" ng-click="pay()">
+						CORREGIR ORDEN
+					</a>
+					<a ng-show="paid" class="button pay" color="text" ng-click="goTo('confirm', {'order_id': order_id});">
+						VER PAGO
+					</a>
+				</div>
 			</div>
-			<a ng-show="order_id==null&&!tables[0]" class="button pay" color="text" background="secondary-text">
-				NO HAY MESAS
-			</a>
-			<a ng-show="order_id==null&&tables[0]" class="button pay" color="text" background="accent" ng-click="pay()">
-				ENVIAR ORDEN
-				<i class="material-icons">print</i>
-			</a>
-			<a ng-show="order_id!=null&&!paid" class="button pay" color="text" background="accent" ng-click="pay()">
-				CORREGIR ORDEN
-				<i class="material-icons">print</i>
-			</a>
-			<a ng-show="paid" class="button pay" color="text" background="accent" ng-click="goTo('confirm', {'order_id': order_id});">
-				VER PAGO
-				<i class="material-icons">visibility</i>
-			</a>
-		</section>
+		</div>	
 	</div>
 </div>

@@ -2,21 +2,26 @@
 <!DOCTYPE html5>
 <html background="light-primary">
   <head>
-  	<script src="{% static 'pventa/js/angular/angular.js' %}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'pventa/js/angular/angular.js' %}"></script>
     <script src="{% static 'pventa/js/angular/angular-route.js' %}"></script>
-  	<script src="{% static 'pventa/js/angular/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'pventa/js/angular/angular-ui-router.min.js' %}"></script>
     <script src="{% static 'venta/js/venta.js' %}"></script>
-  	<script src="{% static 'venta/js/sq_print.js' %}"></script>
+    <script src="{% static 'venta/js/sq_print.js' %}"></script>
     <script src="{% static 'venta/js/controllers.js' %}"></script>
-  	<script src="{% static 'venta/js/routers.js' %}"></script>
-  	<script type="text/javascript">var csrf = '{{ csrf_token }}';</script>
-  	<link rel="stylesheet" type="text/css" href="{% static 'venta/css/venta.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'pventa/css/palette.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'pventa/css/family.css' %}">
+    <script src="{% static 'venta/js/routers.js' %}"></script>
+    <script type="text/javascript">var csrf = '{{ csrf_token }}';</script>
+
+    <!--link rel="stylesheet" type="text/css" href="{% static 'venta/css/venta.css' %}"-->
+    <link rel="stylesheet" type="text/css" href="{% static 'pventa/css/palette.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'pventa/css/family.css' %}">
+    <!--link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"-->
+    <link rel="stylesheet" type="text/css" href="{% static 'venta/css/materialize.min.css' %}">
+
   	<title>P - Venta</title>
   </head>
   <body ng-app="venta_app" ng-controller="main_controller">
-  	<header background="dark-primary">
+  	<!--header background="dark-primary">
       <div id="menu">
           <ul>
             {% if groups.0.name == 'mesero' or groups.1.name == 'mesero' %}
@@ -43,10 +48,6 @@
               <span color="light-primary">Categorias</span>
             </li>
             {% endif %}
-            <!--li ng-click="goTo('clients')">
-              <div class="img clients"></div>
-              <span color="light-primary">Clientes</span>
-            </li-->
           </ul>
       </div>
       {% if user.is_staff %}
@@ -75,12 +76,37 @@
           <li></li>
         </ul>
       </nav>
-  	</header>
-	<section id="main" >
-		<div ui-view></div>  
-	</section>
-	<footer>
-		
-	</footer>
+  	</header-->
+    <header class="row navbar-fixed">
+       <nav>
+        <div class="nav-wrapper blue-grey darken-1">
+          <a href="/#/" class="brand-logo">Logo</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li>
+              <a class="waves-effect waves-light " ng-click="goTo('dashboard')">
+                <i class="material-icons">dashboard</i>
+              </a>
+            </li>
+            {% if user.is_staff %}
+            <li>
+              <a class="waves-effect waves-light " onclick="location='/admin/';">
+                <i class="material-icons">settings</i>
+              </a>
+            </li>
+            {% endif %}
+            <li>
+              <a class="waves-effect waves-light " ng-click="logout()">
+                <i class="material-icons">power_settings_new</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+  	<section id="main" >
+      <div ui-view></div>  
+  	</section>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{% static 'venta/js/materialize.min.js' %}"></script>
   </body>
 </html>

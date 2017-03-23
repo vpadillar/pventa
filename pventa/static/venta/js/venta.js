@@ -29,10 +29,10 @@ venta_app.controller('main_controller',function($scope, $http, $state){
 			menu.removeAttribute("style");
 		}
 	}
-	window.addEventListener('hashchange', function() {
+	/*window.addEventListener('hashchange', function() {
 		menu_magic();
 	});
-	menu_magic();
+	menu_magic();*/
 });
 
 venta_app.config(function($interpolateProvider, $httpProvider) {

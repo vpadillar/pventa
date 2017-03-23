@@ -112,7 +112,7 @@ class OrderListView(supra.SupraListView):
 class ProductListView(supra.SupraListView):
 	model = models.Product
 	search_fields = ['name']
-	list_filter = ['itemorder__order', 'pk']
+	list_filter = ['itemorder__order', 'pk', 'category__id']
 	list_display = ['id', 'name', 'price', 'method', 'presentation', 'category', 'presentation__name']
 
 	class Render:

@@ -118,7 +118,8 @@ class ProductAdmin(NestedModelAdmin):
 			obj.service = service
 		#end if
 		super(ProductAdmin, self).save_model(request, obj, form, change)
-	#end def#end class
+	#end def
+#end class
 
 class ClientAdmin(admin.ModelAdmin):
 	model = models.Client

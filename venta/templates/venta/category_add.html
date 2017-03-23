@@ -1,4 +1,4 @@
-<div id="category-add" class="add">
+<!--div id="category-add" class="add">
 	<h2>[[title]]</h2>
 	<div id="form">
 		<div class="inputs">
@@ -35,5 +35,67 @@
 	</div>
 	<div id="success" background="text">
 		<span>Operación exitosa</span>
+	</div>
+</div-->
+
+
+
+<style type="text/css">
+	.search-icon{
+		font-size: 22px;
+	}
+	input[type="search"]{
+		height: 30px;
+	}
+	input.mini{
+		width: 50px;
+		text-align: center;
+	}
+	a.button{
+		cursor: pointer;
+		margin: 10px;
+	}
+	.buttons{
+		margin-top: 10px;
+		text-align: right;
+	}
+	.boucher table{
+		min-height: 200px;
+		display: block;
+	}
+</style>
+
+<div class="row">
+	<div class="col s12 m12 l12">
+		<div class="card darken-1">
+			<div class="card-content boucher">
+				<h2>[[title]]</h2>
+				<div class="inputs">
+					<p class="input-field">
+						<label class="active" class="active">Nombre categoría</label>
+						<input type="text" ng-model="category_name">
+					</p>
+					<p>
+						<label class="active">Imagen</label>
+						<select class="browser-default"
+							class="preview"
+							ng-options="option.name for option in category_image.data.availableOptions track by option.id"
+				      		ng-model="category_image.data.selectedOption">
+						</select>
+					</p>
+				</div>
+				<div class="buttons">
+					<a ng-click="del()" ng-show="category_id" class="button" color="accent">
+						BORRAR
+					</a>
+					<a ng-click="goTo('categories')" class="button" color="accent">
+						CANCELAR
+					</a>
+					<a id="add-button" class="button" color="accent" ng-click="send()">
+						GUARDAR CATEGORÍA
+					</a>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
