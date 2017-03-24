@@ -23,6 +23,7 @@ from pventa.admin import admin_site
 urlpatterns = [
     url(r'^', include('venta.urls')),
     url(r'^', include('restorant.urls')),
+    url(r'^', include('promocion.urls')),
     url(r'^reporte/', include('reporte.urls', namespace='reporte')),
     url(r'^admin/', admin_site.urls),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
