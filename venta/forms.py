@@ -46,13 +46,19 @@ class CellarForm(forms.ModelForm):
 #end class
 
 class CategoryForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(CategoryForm, self).__init__(*args, **kwargs)
+		usuario = CuserMiddleware.get_user()
+		service = models.Service.objects.filter(userservice__user = usuario).first()
+		self.fields['image'] = forms.ModelChoiceField(label='Imagen', queryset=models.Image.objects.filter(service = service), required=False)
+	# end def
 
 	class Meta:
 		model = models.Category
-		exclude = ["service"]
+		exclude = []
 	#end class
 
-	def save(self, commit = True):
+	def save2(self, commit = True):
 		categry = super(CategoryForm, self).save(commit=False)
 		usuario = CuserMiddleware.get_user()
 		categry.service = models.Service.objects.filter(userservice__user = usuario).first()
