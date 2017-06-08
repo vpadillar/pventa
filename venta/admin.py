@@ -84,6 +84,7 @@ class ProviderAdmin(NestedModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
 	model = models.Category
+	form = forms.CategoryForm
 	def get_queryset(self, request):
 		user = CuserMiddleware.get_user()
 		queryset = super(CategoryAdmin, self).get_queryset(request)
