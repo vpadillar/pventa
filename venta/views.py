@@ -5,6 +5,7 @@ from django.middleware.csrf import get_token
 from django.views.generic.base import TemplateView
 from supra import views as supra
 from django.contrib.auth.models import Group
+from django.db.models import Q
 import models
 import forms
 import json
@@ -43,11 +44,7 @@ class CategoyListView(supra.SupraListView):
 	model = models.Category
 	search_fields = ['name']
 	list_filter = ['pk']
-	list_display = ['id', 'name', 'image']
-
-	class Render:
-		image = 'image_id'
-	# end class
+	list_display = ['id', 'name', 'image__url']
 
 	def get_queryset(self):
 		queryset = super(CategoyListView, self).get_queryset()

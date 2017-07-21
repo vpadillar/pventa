@@ -55,8 +55,18 @@ class CategoryForm(forms.ModelForm):
 
 	class Meta:
 		model = models.Category
-		exclude = []
+		exclude = ['service']
 	#end class
+	def save(self, commit=True):
+		obj = super(CategoryForm, self).save(commit=False)
+		user = CuserMiddleware.get_user()
+		service = models.Service.objects.filter(userservice__user = user).first()
+		if service:
+			obj.service = service
+		#end if
+		obj.save()
+		return obj
+	#end def
 
 	def save2(self, commit = True):
 		categry = super(CategoryForm, self).save(commit=False)
